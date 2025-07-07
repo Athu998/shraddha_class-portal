@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f7f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #2c3e50;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    button {
+      background-color: #2ecc71;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background-color: #27ae60;
+    }
+
+    .logout {
+      float: right;
+      background-color: #e74c3c;
+    }
+
+    .logout:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>👋 Welcome, Admin</h2>
+
+    <form method="POST" action="/admin/mark-attendance">
+
+      <button type="submit">✅ Submit Attendance</button>
+    </form>
+
+    <form action="/admin/logout" method="GET">
+      <button type="submit" class="logout">🔓 Logout</button>
+    </form>
+  </div>
+  <hr><h3>📤 Upload Notes PDF</h3>
+
+<form action="/admin/upload-note" method="POST" enctype="multipart/form-data">
+  <label>Note Title:</label><br>
+  <input type="text" name="title" required><br><br>
+
+  <label>Student ID:</label><br>
+  <input type="text" name="student_id" required><br><br>
+
+  <label>Upload PDF:</label><br>
+  <input type="file" name="pdf" accept="application/pdf" required><br><br>
+
+  <button type="submit">📄 Upload Note</button>
+</form>
+
+
+</body>
+</html>

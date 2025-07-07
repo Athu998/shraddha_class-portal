@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Profile</title>
+</head>
+<body>
+  <h2>Edit Your Profile</h2>
+  <form action="/students/update-profile" method="POST">
+    <label>Name:</label><br />
+    <input type="text" name="name" required /><br /><br />
+
+    <label>Date of Birth:</label><br />
+    <input type="date" name="dob" required /><br /><br />
+
+    <label>School Name:</label><br />
+    <input type="text" name="school_name" required /><br /><br />
+
+    <label>Last Year Marks:</label><br />
+    <input type="text" name="last_year_marks" required /><br /><br />
+
+    <label>Parent Contact:</label><br />
+    <input type="text" name="parent_contact" required /><br /><br />
+
+    <label>Address:</label><br />
+    <input type="text" name="address" required /><br /><br />
+
+    <label>Email:</label><br />
+    <input type="email" name="email" required /><br /><br />
+
+    <button type="submit">Update Profile</button>
+  </form>
+
+  <br />
+  <a href="/students/dashboard">Back to Dashboard</a>
+</body>
+</html>

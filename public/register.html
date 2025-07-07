@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Registration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #8e9eab, #eef2f3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      animation: fadeIn 1s ease-in;
+    }
+
+    .form-container {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      width: 90%;
+      max-width: 500px;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #3498db;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+      transform: scale(1.02);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .form-container {
+        padding: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>🎓 Student Registration</h2>
+    <form action="/students/register" method="POST">
+      <input type="text" name="name" placeholder="Full Name" required />
+      <input type="date" name="dob" required />
+      <input type="text" name="school_name" placeholder="School Name" required />
+
+      <label>Class Name:</label>
+      <input type="text" name="class" placeholder="e.g. 10th A" required />
+
+      <input type="number" name="last_year_marks" placeholder="Last Year Marks" step="0.01" />
+      <input type="text" name="parent_contact" placeholder="Parent Contact Number" required />
+      <input type="text" name="address" placeholder="Address" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="password" name="password" placeholder="Password" required />
+
+      <button type="submit">Register</button>
+    </form>
+  </div>
+</body>
+</html>
