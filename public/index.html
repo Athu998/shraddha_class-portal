@@ -5,16 +5,38 @@
   <title>Shraddha Classes | Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <style>
     body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
+      margin: 0; padding: 0; height: 100%;
       font-family: 'Segoe UI', sans-serif;
+      scroll-behavior: smooth;
     }
 
+    /* Loader */
+    #loader {
+      position: fixed;
+      width: 100vw; height: 100vh;
+      background: #fff;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    }
+
+    #loader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .spinner-border {
+      width: 3rem; height: 3rem;
+    }
+
+    /* Hero Section */
     .hero-section {
-      background: url('https://images.unsplash.com/photo-1524069290683-0457abfe42c3?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2Nob29sJTIwc3R1ZGVudHxlbnwwfHwwfHx8MA%3D%3D') no-repeat center center;
+      background: url('https://images.unsplash.com/photo-1524069290683-0457abfe42c3?fm=jpg&q=60&w=3000') no-repeat center center;
       background-size: cover;
       height: 100vh;
       display: flex;
@@ -36,6 +58,18 @@
       text-align: left;
       max-width: 700px;
       padding: 40px;
+      animation: fadeInUp 1s ease-in-out;
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .content h1 {
@@ -43,31 +77,22 @@
       font-weight: 700;
     }
 
-    .content p {
-      font-size: 1.2rem;
-      margin-top: 15px;
-      margin-bottom: 30px;
-    }
-
     .btn-custom {
       padding: 12px 24px;
       font-size: 16px;
       border-radius: 50px;
       margin-right: 15px;
+      transition: transform 0.3s ease;
     }
 
-    footer {
-      background-color: #343a40;
-      color: #ddd;
-      text-align: center;
-      padding: 12px 0;
-      font-size: 14px;
+    .btn-custom:hover {
+      transform: scale(1.05);
     }
 
+    /* Responsive */
     @media (max-width: 768px) {
       .hero-section {
-        height: auto;
-        padding: 80px 20px;
+        height: auto; padding: 80px 20px;
       }
       .content h1 {
         font-size: 2rem;
@@ -81,6 +106,13 @@
   </style>
 </head>
 <body>
+  <!-- Loader -->
+  <div id="loader">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
   <!-- Hero Section -->
   <section class="hero-section">
     <div class="overlay"></div>
@@ -90,13 +122,21 @@
       <a href="/students/register-form" class="btn btn-success btn-custom">🎓 Student Register</a>
       <a href="/students/login-form" class="btn btn-outline-light btn-custom">🔐 Student Login</a>
       <a href="/admin/admin-login" class="btn btn-warning btn-custom">🛠️ Admin Login</a>
+      
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer>
-    Developed and Maintained by <strong>Atharva Dhananjay More</strong> | 
-    <a href="https://www.linkedin.com/in/atharvadmore" target="_blank" class="text-info text-decoration-none">LinkedIn</a>
-  </footer>
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <script src="script.js"></script>
+  <script>
+    // Smooth fade-out loader
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        document.getElementById("loader").classList.add("fade-out");
+      }, 300); // optional delay
+    });
+  </script>
 </body>
 </html>

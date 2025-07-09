@@ -3,6 +3,7 @@ const path = require('path');
 const app = express();
 const session = require('express-session');
 const db = require('./db');
+const contactRoutes = require('./routes/contact');
 
 
 const studentRoute = require('./routes/studentRoutes');
@@ -30,7 +31,7 @@ app.use(session({
 
 app.use('/students', studentRoute);
 app.use('/admin', adminRoute);
-
+app.use('/', contactRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
