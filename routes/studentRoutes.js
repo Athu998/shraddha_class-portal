@@ -109,6 +109,8 @@ router.get('/dashboard', async (req, res) => {
         const notes = await Notes.find({ student_id: student._id }).sort({ uploaded_at: -1 });
         const worksheets = await Worksheet.find().sort({ uploaded_at: -1 });
 
+        console.log("Fetched notes for student:", student._id, notes); // Debug line
+
         const total_days = attendanceRecords.length;
         const present_days = attendanceRecords.filter(a => a.status === 'Present').length;
         const absent_days = total_days - present_days;
@@ -143,27 +145,37 @@ router.get('/dashboard', async (req, res) => {
 
         attendanceHTML += `</table>`;
 
-        let notesHTML = `<h3>📘 Notes</h3><ul>`;
-        notes.forEach(note => {
-            notesHTML += `
-                <li>
-                    <strong>${note.title}</strong>:
-                    <a href="/uploads/${note.file}" target="_blank">📄 View PDF</a>
-                </li>
-            `;
-        });
-        notesHTML += `</ul>`;
+        let notesHTML = `<h3>📘 Notes</h3>`;
+        if (notes.length === 0) {
+            notesHTML += `<p>No notes available.</p>`;
+        } else {
+            notesHTML += `<ul>`;
+            notes.forEach(note => {
+                notesHTML += `
+                    <li>
+                        <strong>${note.title}</strong>:
+                        <a href="/uploads/${note.file}" target="_blank">📄 View PDF</a>
+                    </li>
+                `;
+            });
+            notesHTML += `</ul>`;
+        }
 
-        let worksheetHTML = `<h3>📝 Worksheets</h3><ul>`;
-        worksheets.forEach(ws => {
-            worksheetHTML += `
-                <li>
-                    <strong>${ws.title}</strong>:
-                    <a href="/uploads/${ws.file}" target="_blank">📄 View PDF</a>
-                </li>
-            `;
-        });
-        worksheetHTML += `</ul>`;
+        let worksheetHTML = `<h3>📝 Worksheets</h3>`;
+        if (worksheets.length === 0) {
+            worksheetHTML += `<p>No worksheets available.</p>`;
+        } else {
+            worksheetHTML += `<ul>`;
+            worksheets.forEach(ws => {
+                worksheetHTML += `
+                    <li>
+                        <strong>${ws.title}</strong>:
+                        <a href="/uploads/${ws.file}" target="_blank">📄 View PDF</a>
+                    </li>
+                `;
+            });
+            worksheetHTML += `</ul>`;
+        }
 
         res.send(`
             <h1>Welcome, ${student.name}!</h1>
@@ -192,7 +204,7 @@ router.get('/dashboard', async (req, res) => {
             <br><a href="/students/logout">Logout</a>
         `);
     } catch (error) {
-        console.error(error);
+        console.error("Dashboard error:", error);
         res.status(500).send("Server error");
     }
 });
