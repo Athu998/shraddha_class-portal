@@ -28,21 +28,31 @@ router.get('/register-form', (req, res) => {
 
 
 router.post('/register', async (req, res) => {
-    const { name, dob, school_name, last_year_marks, parent_contact, address, email, password, class: className } = req.body;
+    const {
+        name,
+        dob,
+        school_name,
+        last_year_marks,
+        parent_contact,
+        address,
+        email,
+        password,
+        className // ✅ Already using correct name from <select name="className">
+    } = req.body;
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newStudent = new Student({
             name,
-    dob,
-    school_name,
-    last_year_marks,
-    parent_contact,
-    address,
-    email,
-    password: hashedPassword,  
-    class: className
+            dob,
+            school_name,
+            last_year_marks,
+            parent_contact,
+            address,
+            email,
+            password: hashedPassword,
+            className 
         });
 
         await newStudent.save();
@@ -56,11 +66,34 @@ router.post('/register', async (req, res) => {
         });
 
         const mailOptions = {
-            from: 'trycoding06@gmail.com',
-            to: email,
-            subject: 'Registration Successful',
-            text: `Hello ${name},\n\nYour registration was successful with Shraddha  Coaching Classes.\nThank you! \n Devloped and Mainted by \n Atharva Dhananjay More`
-        };
+    from: 'trycoding06@gmail.com',
+    to: email,
+    subject: '🎉 Registration Successful - Shraddha Coaching Classes',
+    html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
+            <h2 style="color: #2c3e50;">Hello ${name},</h2>
+            <p>🎓 Your registration was <strong>successfully completed</strong> with <strong>Shraddha Coaching Classes</strong>.</p>
+            <h3 style="margin-top: 20px; color: #007bff;">📝 Student Details</h3>
+            <ul style="line-height: 1.6;">
+                <li><strong>Full Name:</strong> ${name}</li>
+                <li><strong>Date of Birth:</strong> ${dob}</li>
+                <li><strong>School Name:</strong> ${school_name}</li>
+                <li><strong>Last Year Marks:</strong> ${last_year_marks}</li>
+                <li><strong>Parent Contact:</strong> ${parent_contact}</li>
+                <li><strong>Email:</strong> ${email}</li>
+                <li><strong>Address:</strong> ${address}</li>
+                <li><strong>Class:</strong> ${className}</li>
+            </ul>
+            <hr style="margin: 30px 0;">
+            <p style="color: #444;">
+                <strong style="font-size: 16px;">💡 Developed & Maintained by:</strong><br>
+                <strong style="font-size: 18px; color: #222;">Atharva Dhananjay More</strong><br>
+                <a href="https://www.linkedin.com/in/atharva-more-34a015194/" style="color: #0077b5; text-decoration: none; font-weight: bold;" target="_blank">🔗 LinkedIn Profile</a>
+            </p>
+        </div>
+    `
+};
+
 
         transporter.sendMail(mailOptions, (err, info) => {
             if (err) console.error("Email error:", err);
@@ -73,6 +106,7 @@ router.post('/register', async (req, res) => {
         res.status(500).send("Server error during registration");
     }
 });
+
 
 
 router.post('/login', async (req, res) => {

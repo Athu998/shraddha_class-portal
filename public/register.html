@@ -32,23 +32,20 @@
       margin-bottom: 20px;
     }
 
-    input[type="text"],
-    input[type="date"],
-    input[type="number"],
-    input[type="email"],
-    input[type="password"] {
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input,
+    select {
       width: 100%;
       padding: 12px;
       margin: 8px 0;
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 15px;
-    }
-
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 10px;
     }
 
     button {
@@ -96,19 +93,44 @@
   <div class="form-container">
     <h2>🎓 Student Registration</h2>
     <form action="/students/register" method="POST">
-      <input type="text" name="name" placeholder="Full Name" required />
-      <label>Enter Date of birth :</label>
-      <input type="date" name="dob" required />
-      <input type="text" name="school_name" placeholder="School Name" required />
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" name="name" placeholder="Full Name" required />
 
-      <label>Class Name:</label>
-      <input type="text" name="class" placeholder="e.g. 10th A" required />
+      <label for="dob">Date of Birth:</label>
+      <input type="date" id="dob" name="dob" required />
 
-      <input type="number" name="last_year_marks" placeholder="Last Year Marks" step="0.01" />
-      <input type="text" name="parent_contact" placeholder="Parent Contact Number" required />
-      <input type="text" name="address" placeholder="Address" required />
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="password" name="password" placeholder="Password" required />
+      <label for="school_name">School Name:</label>
+      <input type="text" id="school_name" name="school_name" placeholder="School Name" required />
+
+      <label for="className">Class:</label>
+      <select id="className" name="className" required>
+        <option value="">--Select Class--</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+
+      <label for="last_year_marks">Last Year Marks:</label>
+      <input type="number" id="last_year_marks" name="last_year_marks" placeholder="Marks %" step="0.01" required />
+
+      <label for="parent_contact">Parent Contact Number:</label>
+      <input type="text" id="parent_contact" name="parent_contact" placeholder="10-digit Phone Number" pattern="\\d{10}" required title="Enter 10 digit phone number" />
+
+      <label for="address">Address:</label>
+      <input type="text" id="address" name="address" placeholder="Address" required />
+
+      <label for="email">Email Address:</label>
+      <input type="email" id="email" name="email" placeholder="Email" required />
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" placeholder="Password" required />
 
       <button type="submit">Register</button>
     </form>

@@ -83,12 +83,12 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/dashboard', async (req, res) => {
-    if (!req.session.admin) return res.send("Unauthorized");
+  if (!req.session.admin) return res.send("Unauthorized");
 
-    try {
-        const students = await Student.find();
+  try {
+    const students = await Student.find();
 
-       let html = `
+    let html = `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -103,7 +103,7 @@ router.get('/dashboard', async (req, res) => {
           padding: 20px;
         }
         .container {
-          max-width: 1000px;
+          max-width: 1200px;
           margin: auto;
           background: #fff;
           padding: 30px;
@@ -111,7 +111,7 @@ router.get('/dashboard', async (req, res) => {
           box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
           animation: fadeInUp 0.6s ease-in-out;
         }
-        h2 {
+        h2, h3 {
           color: #2c3e50;
           margin-bottom: 10px;
         }
@@ -121,7 +121,7 @@ router.get('/dashboard', async (req, res) => {
           margin-top: 20px;
         }
         th, td {
-          padding: 14px;
+          padding: 12px;
           text-align: left;
           border-bottom: 1px solid #dee2e6;
         }
@@ -153,9 +153,6 @@ router.get('/dashboard', async (req, res) => {
         .logout:hover {
           background-color: #c82333;
         }
-        form {
-          margin-bottom: 30px;
-        }
         input[type="text"], input[type="file"] {
           padding: 8px;
           width: 100%;
@@ -177,7 +174,13 @@ router.get('/dashboard', async (req, res) => {
           <h3>✅ Mark Attendance</h3>
           <table>
             <thead>
-              <tr><th>Student Name</th><th>Status</th></tr>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Roll No</th>
+                <th>Status</th>
+              </tr>
             </thead>
             <tbody>
     `;
@@ -185,9 +188,12 @@ router.get('/dashboard', async (req, res) => {
     students.forEach(student => {
       html += `
         <tr>
+          <td>${student._id}</td>
           <td>${student.name}</td>
+          <td>${student.email || '-'}</td>
+          <td>${student.roll || '-'}</td>
           <td>
-            <label><input type="radio" name="attendance[${student._id}]" value="Present" > Present</label>
+            <label><input type="radio" name="attendance[${student._id}]" value="Present"> Present</label>
             <label><input type="radio" name="attendance[${student._id}]" value="Absent"> Absent</label>
           </td>
         </tr>
@@ -209,8 +215,12 @@ router.get('/dashboard', async (req, res) => {
           <label>Note Title:</label><br>
           <input type="text" name="title" required><br>
 
-          <label>Student ID:</label><br>
-          <input type="text" name="student_id" required><br>
+          <label>Select Class:</label><br>
+<select name="class" required>
+  <option value="">-- Select Class --</option>
+  ${[...Array(10)].map((_, i) => `<option value="${i + 1}">Class ${i + 1}</option>`).join('')}
+</select><br>
+
 
           <label>Upload PDF:</label><br>
           <input type="file" name="pdf" accept="application/pdf" required><br>
@@ -222,68 +232,82 @@ router.get('/dashboard', async (req, res) => {
     </html>
     `;
 
-        res.send(html);
-    } catch (err) {
-        console.error("Dashboard error:", err);
-        res.status(500).send("Error loading dashboard");
-    }
+    res.send(html);
+  } catch (err) {
+    console.error("Dashboard error:", err);
+    res.status(500).send("Error loading dashboard");
+  }
 });
 
+// Mark Attendance Route
 router.post('/mark-attendance', async (req, res) => {
-    const attendanceData = req.body.attendance;
-    const date = new Date().toISOString().split('T')[0];
+  const attendanceData = req.body.attendance;
+  const date = new Date().toISOString().split('T')[0];
 
-    try {
-        for (const studentId in attendanceData) {
-            const status = attendanceData[studentId];
+  try {
+    for (const studentId in attendanceData) {
+      const status = attendanceData[studentId];
 
-            const existing = await Attendance.findOne({ student_id: studentId, date });
-            if (!existing) {
-                await Attendance.create({
-                    student_id: studentId,
-                    status,
-                    date
-                });
-            }
-
-            await sendAttendanceEmail(studentId, status, date);
-        }
-
-        res.send(`<h2>✅ Attendance marked and emails sent!</h2><a href="/admin/dashboard">Back to Dashboard</a>`);
-    } catch (err) {
-        console.error("Mark attendance error:", err);
-        res.status(500).send("Error saving attendance");
-    }
-});
-
-router.post('/upload-note', upload.single('pdf'), async (req, res) => {
-    try {
-        const { student_id = '', title = '' } = req.body;
-        const file = req.file;
-
-        if (!file || !student_id.trim() || !title.trim()) {
-            return res.status(400).send("❌ All fields are required and file must be uploaded.");
-        }
-
-        const newNote = new Notes({
-            student_id: student_id.trim(),
-            title: title.trim(),
-            file: file.filename
+      const existing = await Attendance.findOne({ student_id: studentId, date });
+      if (!existing) {
+        await Attendance.create({
+          student_id: studentId,
+          status,
+          date
         });
+      }
 
-        await newNote.save();
-
-        res.send(`
-            <div style="text-align: center; font-family: sans-serif;">
-                <h2 style="color: green;">✅ PDF uploaded and saved!</h2>
-                <a href="/admin/dashboard" style="text-decoration: none; background-color: #007bff; padding: 10px 20px; color: white; border-radius: 5px;">Back to Dashboard</a>
-            </div>
-        `);
-    } catch (err) {
-        console.error("❌ Upload error:", err);
-        res.status(500).send("❌ Server error while uploading.");
+      await sendAttendanceEmail(studentId, status, date);
     }
+
+    res.send(`<h2>✅ Attendance marked and emails sent!</h2><a href="/admin/dashboard">Back to Dashboard</a>`);
+  } catch (err) {
+    console.error("Mark attendance error:", err);
+    res.status(500).send("Error saving attendance");
+  }
 });
+
+// Upload Notes Route
+router.post('/upload-note', upload.single('pdf'), async (req, res) => {
+  try {
+    const { title = '', class: className = '' } = req.body;
+    const file = req.file;
+
+    if (!file || !title.trim() || !className.trim()) {
+      return res.status(400).send("❌ All fields are required and file must be uploaded.");
+    }
+
+    // Find all students in that class
+    const students = await Student.find({ className: className.trim() });
+
+
+
+    if (!students.length) {
+      return res.status(404).send(`❌ No students found in class ${className}`);
+    }
+
+    const notesToInsert = students.map(student => ({
+      student_id: student._id,
+      title: title.trim(),
+      file: file.filename
+    }));
+
+    await Notes.insertMany(notesToInsert);
+
+    res.send(`
+      <div style="text-align: center; font-family: sans-serif;">
+        <h2 style="color: green;">✅ Notes uploaded for ${students.length} students in class ${className}!</h2>
+        <a href="/admin/dashboard" style="text-decoration: none; background-color: #007bff; padding: 10px 20px; color: white; border-radius: 5px;">Back to Dashboard</a>
+      </div>
+    `);
+  } catch (err) {
+    console.error("❌ Upload error:", err);
+    res.status(500).send("❌ Server error while uploading.");
+  }
+});
+
+
+module.exports = router;
 
 
 
