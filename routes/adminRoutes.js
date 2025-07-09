@@ -14,7 +14,7 @@ const Notes = require('../models/Notes');
 
 router.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
-// === Email Function ===
+
 async function sendAttendanceEmail(studentId, status, date) {
     const student = await Student.findById(studentId);
     if (!student || !student.email) return;
