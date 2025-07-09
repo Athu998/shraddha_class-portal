@@ -2,138 +2,81 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Student Registration</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Registration | Shraddha Coaching</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to right, #8e9eab, #eef2f3);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      animation: fadeIn 1s ease-in;
+      font-family: 'Segoe UI', sans-serif;
     }
-
     .form-container {
-      background: #ffffff;
+      background: #fff;
       padding: 40px;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      width: 90%;
+      width: 100%;
       max-width: 500px;
-      animation: slideUp 0.5s ease-out;
-    }
-
-    h2 {
-      text-align: center;
-      color: #2c3e50;
-      margin-bottom: 20px;
-    }
-
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 10px;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 15px;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      background-color: #3498db;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      margin-top: 20px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #2980b9;
-      transform: scale(1.02);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 600px) {
-      .form-container {
-        padding: 25px;
-      }
     }
   </style>
 </head>
 <body>
   <div class="form-container">
-    <h2>🎓 Student Registration</h2>
+    <h2 class="text-center fw-bold text-primary">🎓 Student Registration</h2>
     <form action="/students/register" method="POST">
-      <label for="name">Full Name:</label>
-      <input type="text" id="name" name="name" placeholder="Full Name" required />
-
-      <label for="dob">Date of Birth:</label>
-      <input type="date" id="dob" name="dob" required />
-
-      <label for="school_name">School Name:</label>
-      <input type="text" id="school_name" name="school_name" placeholder="School Name" required />
-
-      <label for="className">Class:</label>
-      <select id="className" name="className" required>
-        <option value="">--Select Class--</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-        
-      </select>
-
-      <label for="last_year_marks">Last Year Marks:</label>
-      <input type="number" id="last_year_marks" name="last_year_marks" placeholder="Marks %" step="0.01" required />
-
-      <label for="parent_contact">Parent Contact Number:</label>
-      <input type="text" id="parent_contact" name="parent_contact" placeholder="10-digit Phone Number" pattern="\\d{10}" required title="Enter 10 digit phone number" />
-
-      <label for="address">Address:</label>
-      <input type="text" id="address" name="address" placeholder="Address" required />
-
-      <label for="email">Email Address:</label>
-      <input type="email" id="email" name="email" placeholder="Email" required />
-
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" placeholder="Password" required />
-
-      <button type="submit">Register</button>
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-control" name="name" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Date of Birth</label>
+        <input type="date" class="form-control" name="dob" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">School Name</label>
+        <input type="text" class="form-control" name="school_name" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Class</label>
+        <select class="form-select" name="className" required>
+          <option value="">--Select Class--</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Last Year Marks (%)</label>
+        <input type="number" class="form-control" name="last_year_marks" step="0.01" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Parent Contact</label>
+        <input type="text" class="form-control" name="parent_contact" pattern="\d{10}" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Address</label>
+        <input type="text" class="form-control" name="address" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" name="email" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" name="password" required />
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Register</button>
     </form>
   </div>
 </body>
