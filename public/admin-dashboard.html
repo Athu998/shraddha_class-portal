@@ -1,104 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Admin Dashboard</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f7f9;
-      margin: 0;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    h2 {
-      color: #2c3e50;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    th, td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-
-    th {
-      background-color: #3498db;
-      color: white;
-    }
-
-    tr:hover {
-      background-color: #f1f1f1;
-    }
-
-    button {
-      background-color: #2ecc71;
-      border: none;
-      color: white;
-      padding: 10px 20px;
-      margin-top: 20px;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 4px;
-    }
-
-    button:hover {
-      background-color: #27ae60;
-    }
-
-    .logout {
-      float: right;
-      background-color: #e74c3c;
-    }
-
-    .logout:hover {
-      background-color: #c0392b;
-    }
-  </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
 
-  <div class="container">
-    <h2>👋 Welcome, Admin</h2>
+<body class="bg-light">
 
-    <form method="POST" action="/admin/mark-attendance">
+<div class="container-fluid">
+  <div class="row">
 
-      <button type="submit">✅ Submit Attendance</button>
-    </form>
+    <!-- Sidebar -->
+    <div class="col-md-3 bg-dark text-white p-4" style="height:100vh;">
+      <h3>📊 Admin Panel</h3>
+      <hr>
+      <p>Dashboard</p>
+      <p>Students</p>
+      <p>Attendance</p>
+      <p>Notes</p>
+      <a href="/admin/logout" class="btn btn-danger mt-3">Logout</a>
+    </div>
 
-    <form action="/admin/logout" method="GET">
-      <button type="submit" class="logout">🔓 Logout</button>
-    </form>
+    <!-- Main Content -->
+    <div class="col-md-9 p-4">
+
+      <h2>👋 Welcome, Admin</h2>
+
+      <!-- Cards -->
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card text-center p-3 shadow">
+            <h5>Total Students</h5>
+            <h2>120</h2>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card text-center p-3 shadow">
+            <h5>Present Today</h5>
+            <h2>85</h2>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card text-center p-3 shadow">
+            <h5>Notes Uploaded</h5>
+            <h2>12</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance Table -->
+      <div class="card mt-4 p-3 shadow">
+        <h4>📋 Mark Attendance</h4>
+
+        <table class="table table-hover mt-3">
+          <thead class="table-primary">
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Student Name</td>
+              <td>email@gmail.com</td>
+              <td>
+                <input type="radio"> Present
+                <input type="radio"> Absent
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <button class="btn btn-success">Submit Attendance</button>
+      </div>
+
+      <!-- Upload Notes -->
+      <div class="card mt-4 p-3 shadow">
+        <h4>📤 Upload Notes</h4>
+
+        <input class="form-control mb-2" placeholder="Note Title">
+        <input class="form-control mb-2" placeholder="Student ID">
+        <input type="file" class="form-control mb-2">
+
+        <button class="btn btn-primary">Upload</button>
+      </div>
+
+    </div>
+
   </div>
-  <hr><h3>📤 Upload Notes PDF</h3>
-
-<form action="/admin/upload-note" method="POST" enctype="multipart/form-data">
-  <label>Note Title:</label><br>
-  <input type="text" name="title" required><br><br>
-
-  <label>Student ID:</label><br>
-  <input type="text" name="student_id" required><br><br>
-
-  <label>Upload PDF:</label><br>
-  <input type="file" name="pdf" accept="application/pdf" required><br><br>
-
-  <button type="submit">📄 Upload Note</button>
-</form>
-
+</div>
 
 </body>
 </html>
