@@ -43,103 +43,103 @@ router.get('/register-form', (req, res) => {
 // =======================
 // 📝 REGISTER
 // =======================
-router.post('/register', async (req, res) => {
-  const { name, dob, school_name, last_year_marks, parent_contact, address, email, password, className } = req.body;
+// router.post('/register', async (req, res) => {
+//   const { name, dob, school_name, last_year_marks, parent_contact, address, email, password, className } = req.body;
 
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+//   try {
+//     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newStudent = new Student({
-      name, dob, school_name, last_year_marks,
-      parent_contact, address, email,
-      password: hashedPassword, className
-    });
+//     const newStudent = new Student({
+//       name, dob, school_name, last_year_marks,
+//       parent_contact, address, email,
+//       password: hashedPassword, className
+//     });
 
-    await newStudent.save();
+//     await newStudent.save();
 
-    // ✉️ PROFESSIONAL EMAIL
-    await transporter.sendMail({
-      from: "Shraddha Coaching Classes <trycoding06@gmail.com>",
-      to: email,
-      subject: "🎉 Welcome to Shraddha Coaching Classes",
-      html: `
-<div style="font-family:Segoe UI, sans-serif; max-width:600px; margin:auto; border:1px solid #ddd; border-radius:12px; overflow:hidden">
+//     // ✉️ PROFESSIONAL EMAIL
+//     await transporter.sendMail({
+//       from: "Shraddha Coaching Classes <trycoding06@gmail.com>",
+//       to: email,
+//       subject: "🎉 Welcome to Shraddha Coaching Classes",
+//       html: `
+// <div style="font-family:Segoe UI, sans-serif; max-width:600px; margin:auto; border:1px solid #ddd; border-radius:12px; overflow:hidden">
 
-  <!-- HEADER -->
-  <div style="background:#007bff; color:white; padding:20px; text-align:center">
-    <h2 style="margin:0;">🎓 Shraddha Coaching Classes</h2>
-    <p style="margin:5px 0 0;">Your Success Journey Starts Here 🚀</p>
-  </div>
+//   <!-- HEADER -->
+//   <div style="background:#007bff; color:white; padding:20px; text-align:center">
+//     <h2 style="margin:0;">🎓 Shraddha Coaching Classes</h2>
+//     <p style="margin:5px 0 0;">Your Success Journey Starts Here 🚀</p>
+//   </div>
 
-  <!-- CONTENT -->
-  <div style="padding:20px">
-    <h3>Hello ${name}, 👋</h3>
-    <p>Your registration was successfully completed.</p>
+//   <!-- CONTENT -->
+//   <div style="padding:20px">
+//     <h3>Hello ${name}, 👋</h3>
+//     <p>Your registration was successfully completed.</p>
 
-    <h4>📋 Your Details:</h4>
-    <ul>
-      <li><b>Class:</b> ${className}</li>
-      <li><b>Email:</b> ${email}</li>
-      <li><b>School:</b> ${school_name}</li>
-    </ul>
+//     <h4>📋 Your Details:</h4>
+//     <ul>
+//       <li><b>Class:</b> ${className}</li>
+//       <li><b>Email:</b> ${email}</li>
+//       <li><b>School:</b> ${school_name}</li>
+//     </ul>
 
-    <p>👉 Login and start tracking your attendance, notes & performance.</p>
+//     <p>👉 Login and start tracking your attendance, notes & performance.</p>
 
-    <a href="https://shraddha-classes.onrender.com/"
-       style="display:inline-block;padding:10px 20px;background:#28a745;color:white;text-decoration:none;border-radius:5px">
-       🔐 Login Now
-    </a>
-  </div>
+//     <a href="https://shraddha-classes.onrender.com/"
+//        style="display:inline-block;padding:10px 20px;background:#28a745;color:white;text-decoration:none;border-radius:5px">
+//        🔐 Login Now
+//     </a>
+//   </div>
 
-  <!-- FOOTER / BRANDING -->
-  <div style="background:#f9fafb; padding:15px; text-align:center; font-size:13px; color:#555">
+//   <!-- FOOTER / BRANDING -->
+//   <div style="background:#f9fafb; padding:15px; text-align:center; font-size:13px; color:#555">
 
-    <p>
-      🚀 Developed & Maintained by 
-      <a href="https://www.linkedin.com/in/atharva-more-34a015194/" 
-         target="_blank" 
-         style="color:#007bff; text-decoration:none;">
-        <b>Atharva Dhananjay More</b>
-      </a>
-    </p>
+//     <p>
+//       🚀 Developed & Maintained by 
+//       <a href="https://www.linkedin.com/in/atharva-more-34a015194/" 
+//          target="_blank" 
+//          style="color:#007bff; text-decoration:none;">
+//         <b>Atharva Dhananjay More</b>
+//       </a>
+//     </p>
 
-    <p>Full Stack Developer | ERP & Web Solutions</p>
+//     <p>Full Stack Developer | ERP & Web Solutions</p>
 
-    <p>
-      Empowering education through smart digital solutions 🚀<br>
-      Crafted with ❤️ in Mumbai 🇮🇳 / Nashik 🇮🇳
-    </p>
+//     <p>
+//       Empowering education through smart digital solutions 🚀<br>
+//       Crafted with ❤️ in Mumbai 🇮🇳 / Nashik 🇮🇳
+//     </p>
 
-    <!-- WHATSAPP BUTTON -->
-    <div style="margin-top:10px;">
-      <a href="https://wa.me/919325155560?text=Hi%20I%20want%20a%20website%20like%20this"
-         target="_blank"
-         style="display:inline-block;padding:8px 15px;background:#25D366;color:white;border-radius:20px;text-decoration:none;font-weight:bold;">
-         💬 Chat on WhatsApp
-      </a>
-    </div>
+//     <!-- WHATSAPP BUTTON -->
+//     <div style="margin-top:10px;">
+//       <a href="https://wa.me/919325155560?text=Hi%20I%20want%20a%20website%20like%20this"
+//          target="_blank"
+//          style="display:inline-block;padding:8px 15px;background:#25D366;color:white;border-radius:20px;text-decoration:none;font-weight:bold;">
+//          💬 Chat on WhatsApp
+//       </a>
+//     </div>
 
-    <!-- CONTACT CTA -->
-    <p style="margin-top:10px;">
-      💼 Want a website like this? 
-      <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" style="color:#007bff;">
-        Contact Developer
-      </a>
-    </p>
+//     <!-- CONTACT CTA -->
+//     <p style="margin-top:10px;">
+//       💼 Want a website like this? 
+//       <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" style="color:#007bff;">
+//         Contact Developer
+//       </a>
+//     </p>
 
-  </div>
+//   </div>
 
-</div>
-`
-    });
+// </div>
+// `
+//     });
 
-    res.send(`<h2>✅ Registered Successfully!</h2><a href="/students/login-form">Login</a>`);
+//     res.send(`<h2>✅ Registered Successfully!</h2><a href="/students/login-form">Login</a>`);
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
-  }
-});
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Server error");
+//   }
+// });
 
 // =======================
 // 🔐 LOGIN
