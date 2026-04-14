@@ -4,140 +4,165 @@
   <meta charset="UTF-8" />
   <title>Shraddha Classes | Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    body, html {
-      margin: 0; padding: 0; height: 100%;
+    body {
       font-family: 'Segoe UI', sans-serif;
-      scroll-behavior: smooth;
     }
 
-    /* Loader */
-    #loader {
-      position: fixed;
-      width: 100vw; height: 100vh;
-      background: #fff;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
-    }
-
-    #loader.fade-out {
-      opacity: 0;
-      visibility: hidden;
-    }
-
-    .spinner-border {
-      width: 3rem; height: 3rem;
-    }
-
-    /* Hero Section */
+    /* Hero */
     .hero-section {
-      background: url('https://images.unsplash.com/photo-1524069290683-0457abfe42c3?fm=jpg&q=60&w=3000') no-repeat center center;
-      background-size: cover;
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)),
+      url('https://images.unsplash.com/photo-1524069290683-0457abfe42c3') center/cover;
       height: 100vh;
       display: flex;
       align-items: center;
       color: white;
-      position: relative;
-    }
-
-    .overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
     }
 
     .content {
-      position: relative;
-      z-index: 2;
-      text-align: left;
-      max-width: 700px;
-      padding: 40px;
-      animation: fadeInUp 1s ease-in-out;
+      max-width: 650px;
+      animation: fadeInUp 1s ease;
     }
 
     @keyframes fadeInUp {
-      0% {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .content h1 {
-      font-size: 3rem;
-      font-weight: 700;
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .btn-custom {
-      padding: 12px 24px;
-      font-size: 16px;
       border-radius: 50px;
-      margin-right: 15px;
-      transition: transform 0.3s ease;
+      padding: 12px 22px;
+      margin: 5px;
+      transition: 0.3s;
     }
 
     .btn-custom:hover {
       transform: scale(1.05);
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .hero-section {
-        height: auto; padding: 80px 20px;
-      }
-      .content h1 {
-        font-size: 2rem;
-      }
-      .btn-custom {
-        display: block;
-        width: 100%;
-        margin-bottom: 15px;
-      }
+    /* Features */
+    .feature-card {
+      border-radius: 12px;
+      transition: 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    /* Footer */
+    .footer {
+      background: linear-gradient(135deg,#1e293b,#0f172a);
+      color: #e2e8f0;
+      padding: 25px 10px;
+    }
+
+    .footer a {
+      color: #38bdf8;
+      text-decoration: none;
     }
   </style>
 </head>
+
 <body>
-  <!-- Loader -->
-  <div id="loader">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
+
+<!-- Hero -->
+<section class="hero-section">
+  <div class="container">
+    <div class="content">
+      <h1 class="fw-bold">📚 Shraddha Coaching Classes</h1>
+      <p class="mt-3">
+        Empowering students from class 1 to 10 to achieve academic excellence.
+      </p>
+
+      <div class="mt-4">
+        <a href="/students/register-form" class="btn btn-success btn-custom">🎓 Student Register</a>
+        <a href="/students/login-form" class="btn btn-outline-light btn-custom">🔐 Student Login</a>
+        <a href="/admin/admin-login" class="btn btn-warning btn-custom">🛠️ Admin Login</a>
+      </div>
     </div>
   </div>
+</section>
 
-  <!-- Hero Section -->
-  <section class="hero-section">
-    <div class="overlay"></div>
-    <div class="container content">
-      <h1 style="color:red">ATHARVA TEST UI</h1>
-      <h1>📚 Welcome to Shraddha Coaching Classes</h1>
-      <p>Empowering students from class 1 to 10 to achieve academic excellence. Join now and take the first step toward success.</p>
-      <a href="/students/register-form" class="btn btn-success btn-custom">🎓 Student Register</a>
-      <a href="/students/login-form" class="btn btn-outline-light btn-custom">🔐 Student Login</a>
-      <a href="/admin/admin-login" class="btn btn-warning btn-custom">🛠️ Admin Login</a>
-      
+<!-- Features -->
+<section class="py-5 bg-light">
+  <div class="container text-center">
+    <h2 class="mb-4">Why Choose Us?</h2>
+
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="card feature-card p-3 shadow">
+          <i class="bi bi-book fs-1 text-primary"></i>
+          <h5>Quality Education</h5>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card feature-card p-3 shadow">
+          <i class="bi bi-graph-up fs-1 text-success"></i>
+          <h5>Track Progress</h5>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card feature-card p-3 shadow">
+          <i class="bi bi-file-earmark-text fs-1 text-warning"></i>
+          <h5>Notes Access</h5>
+        </div>
+      </div>
+
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Footer Placeholder -->
-  <div id="footer-placeholder"></div>
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="row align-items-center">
 
-  <script src="script.js"></script>
-  <script>
-    // Smooth fade-out loader
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        document.getElementById("loader").classList.add("fade-out");
-      }, 300); // optional delay
-    });
-  </script>
+      <!-- Left -->
+      <div class="col-md-8 text-center text-md-start">
+        <div id="datetime"></div>
+
+        <div class="mt-2">
+          <a href="/about.html" class="btn btn-outline-info btn-sm me-2">About</a>
+          <a href="/contact.html" class="btn btn-outline-light btn-sm">Contact</a>
+        </div>
+
+        <div class="mt-3">
+          Developed by <strong>Atharva More</strong> |
+          <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank">
+            LinkedIn
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Map -->
+      <div class="col-md-4 mt-3 mt-md-0">
+        <iframe 
+          src="https://www.google.com/maps?q=Pune&output=embed"
+          width="100%" height="150"
+          style="border:0; border-radius:10px;">
+        </iframe>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+<script>
+  function updateDateTime() {
+    document.getElementById("datetime").innerText = new Date().toLocaleString();
+  }
+  setInterval(updateDateTime, 1000);
+  updateDateTime();
+</script>
+
 </body>
 </html>
