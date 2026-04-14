@@ -53,17 +53,72 @@ async function sendAttendanceEmail(studentId, status, date) {
             from: '"Shraddha Classes" <trycoding06@gmail.com>',
             to: student.email,
             subject: `Attendance Update: ${date}`,
-            html: `
-                <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                    <h2 style="color: #2b88f0;">Attendance Notification</h2>
-                    <p>Hello <strong>${student.name}</strong>,</p>
-                    <p>Your attendance for <strong>${date}</strong> is: 
-                       <span style="color: ${status === 'Present' ? '#10b981' : '#ef4444'}; font-weight: bold;">${status}</span>.
-                    </p>
-                    <hr>
-                    <p style="font-size: 12px; color: #666;">Shraddha Coaching Classes, Nashik</p>
-                </div>
-            `
+           html: `
+<div style="font-family:Segoe UI, sans-serif; max-width:600px; margin:auto; border:1px solid #eee; border-radius:12px; overflow:hidden;">
+
+  <!-- HEADER -->
+  <div style="background:#2b88f0; color:white; padding:15px; text-align:center;">
+    <h2 style="margin:0;">📚 Shraddha Coaching Classes</h2>
+  </div>
+
+  <!-- CONTENT -->
+  <div style="padding:20px;">
+    <p>Hello <strong>${student.name}</strong>,</p>
+
+    <p>Your attendance for <strong>${date}</strong> is:</p>
+
+    <p style="font-size:18px; font-weight:bold; color:${status === 'Present' ? '#10b981' : '#ef4444'};">
+      ${status}
+    </p>
+
+    <hr>
+
+    <p style="font-size:13px; color:#555;">
+      Stay consistent and keep improving 📈
+    </p>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="background:#f9fafb; padding:15px; text-align:center; font-size:13px; color:#555;">
+    
+    <p>
+      🚀 Developed & Maintained by 
+      <a href="https://www.linkedin.com/in/atharva-more-34a015194/" 
+         target="_blank" 
+         style="color:#2b88f0; text-decoration:none;">
+        <b>Atharva Dhananjay More</b>
+      </a>
+    </p>
+
+    <p>Full Stack Developer | ERP & Web Solutions</p>
+
+    <p>Transforming education with modern technology 🚀 | Crafted with ❤️ in Mumbai 🇮🇳 / Nashik 🇮🇳</p>
+
+    <!-- 🔥 WHATSAPP BUTTON -->
+    <div style="margin-top:12px;">
+      <a href="https://wa.me/919325155560" 
+         target="_blank"
+         style="display:inline-block; padding:10px 18px; background:#25D366; color:white; border-radius:25px; text-decoration:none; font-weight:bold;">
+         💬 Chat on WhatsApp
+      </a>
+    </div>
+
+    <!-- LINKEDIN CTA -->
+    <p style="margin-top:10px;">
+      💼 Want a website like this? 
+      <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" style="color:#2b88f0;">
+        Contact Developer
+      </a>
+    </p>
+
+    <p style="font-size:11px; color:#888;">
+      Shraddha Coaching Classes, Nashik
+    </p>
+
+  </div>
+
+</div>
+`
         });
     } catch (err) {
         console.error(`❌ Email Error: ${err.message}`);
