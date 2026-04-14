@@ -223,6 +223,7 @@ router.get('/dashboard', checkAdmin, async (req, res) => {
                             </select>
                             <input type="file" name="pdf" class="form-control mb-3 border-0" accept="application/pdf" required>
                             <button class="btn btn-light w-100 fw-bold text-primary rounded-pill">Upload PDF</button>
+                             <a href="/students/register-form" class="btn btn-success btn-custom">🎓 Student Register</a>
                         </form>
                     </div>
                 </div>
