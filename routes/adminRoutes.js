@@ -6,275 +6,318 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 
-const Worksheet = require('../models/Worksheet');
 const Admin = require('../models/Admin');
 const Student = require('../models/Student');
 const Attendance = require('../models/Attendance');
 const Notes = require('../models/Notes');
 
-// =======================
-// 📧 EMAIL CONFIG (FIXED)
-// =======================
+// ==========================================
+// 🛡️ MIDDLEWARE & CONFIG
+// ==========================================
+
+// Check if admin is logged in
+const checkAdmin = (req, res, next) => {
+    if (req.session.admin) return next();
+    res.redirect('/admin/login');
+};
+
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: "trycoding06@gmail.com",
-    pass: "fcusbcnwonkartjg"
-  },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+        user: "trycoding06@gmail.com",
+        pass: "fcusbcnwonkartjg"
+    }
 });
 
-// Verify connection once at start
-transporter.verify()
-  .then(() => console.log("✅ SMTP Connected"))
-  .catch(err => console.error("❌ SMTP Error:", err));
-
-// =======================
-// 📧 SEND EMAIL FUNCTION
-// =======================
-async function sendAttendanceEmail(studentId, status, date) {
-  try {
-    const student = await Student.findById(studentId);
-    if (!student || !student.email) return;
-
-    const mailOptions = {
-      from: "trycoding06@gmail.com",
-      to: student.email,
-      subject: "Attendance Notification",
-      text: `Hello ${student.name},
-
-Your attendance for ${date} is marked as: ${status}.
-
-Shraddha Coaching Classes
-Developed by Atharva`
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log(`📧 Email sent to ${student.email}`);
-
-  } catch (err) {
-    console.error(`❌ Email failed for ${studentId}:`, err.message);
-  }
-}
-
-// =======================
-// 📁 STATIC FILES
-// =======================
-router.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
-
-// =======================
-// 📂 MULTER SETUP
-// =======================
 const uploadsDir = path.join(__dirname, '../public/uploads');
-
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir),
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + '-' + file.originalname;
-    cb(null, uniqueName);
-  }
+    destination: (req, file, cb) => cb(null, uploadsDir),
+    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
 });
-
 const upload = multer({ storage });
 
-// =======================
-// 🔐 LOGIN ROUTES
-// =======================
-router.get('/admin-login', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/admin-login.html'));
-});
+// ==========================================
+// 📧 HELPER FUNCTIONS
+// ==========================================
 
-router.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/admin-login.html'));
+async function sendAttendanceEmail(studentId, status, date) {
+    try {
+        const student = await Student.findById(studentId);
+        if (!student || !student.email) return;
+
+        await transporter.sendMail({
+            from: '"Shraddha Classes" <trycoding06@gmail.com>',
+            to: student.email,
+            subject: `Attendance Update: ${date}`,
+            html: `
+                <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                    <h2 style="color: #2b88f0;">Attendance Notification</h2>
+                    <p>Hello <strong>${student.name}</strong>,</p>
+                    <p>Your attendance for <strong>${date}</strong> has been marked as: 
+                       <span style="color: ${status === 'Present' ? '#10b981' : '#ef4444'}; font-weight: bold;">${status}</span>.
+                    </p>
+                    <hr>
+                    <p style="font-size: 12px; color: #666;">Shraddha Coaching Classes, Nashik<br>Developed by Atharva More</p>
+                </div>
+            `
+        });
+    } catch (err) {
+        console.error(`❌ Email Error: ${err.message}`);
+    }
+}
+
+// ==========================================
+// 🔐 AUTH ROUTES
+// ==========================================
+
+router.get(['/login', '/admin-login'], (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/admin-login.html'));
 });
 
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-
-  try {
-    const admin = await Admin.findOne({ username });
-    if (!admin) return res.send("❌ Admin not found");
-
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) return res.send("❌ Incorrect password");
-
-    req.session.admin = { id: admin._id, username: admin.username };
-    res.redirect('/admin/dashboard');
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
-  }
-});
-
-// =======================
-// 📊 DASHBOARD
-// =======================
-router.get('/dashboard', async (req, res) => {
-  if (!req.session.admin) return res.send("Unauthorized");
-
-  try {
-    const students = await Student.find();
-
-    let html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Admin Dashboard</title>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body class="bg-light">
-    <div class="container mt-4">
-
-      <h2 class="mb-4">👋 Welcome Admin</h2>
-
-      <form method="POST" action="/admin/mark-attendance">
-      <table class="table table-bordered">
-        <thead class="table-dark">
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Roll</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-
-    students.forEach(student => {
-      html += `
-        <tr>
-          <td>${student.name}</td>
-          <td>${student.email || '-'}</td>
-          <td>${student.roll || '-'}</td>
-          <td>
-            <input type="radio" name="attendance[${student._id}]" value="Present"> Present
-            <input type="radio" name="attendance[${student._id}]" value="Absent"> Absent
-          </td>
-        </tr>
-      `;
-    });
-
-    html += `
-        </tbody>
-      </table>
-
-      <button class="btn btn-success">Submit Attendance</button>
-      </form>
-
-      <hr>
-
-      <h4>Upload Notes</h4>
-      <form action="/admin/upload-note" method="POST" enctype="multipart/form-data">
-        <input class="form-control mb-2" type="text" name="title" placeholder="Title" required>
-        <select class="form-control mb-2" name="class" required>
-          ${[...Array(10)].map((_, i) => `<option value="${i+1}">Class ${i+1}</option>`)}
-        </select>
-        <input class="form-control mb-2" type="file" name="pdf" required>
-        <button class="btn btn-primary">Upload</button>
-      </form>
-
-      <a href="/admin/logout" class="btn btn-danger mt-3">Logout</a>
-
-    </div>
-    </body>
-    </html>
-    `;
-
-    // ✅ FIXED
-    res.send(html);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error loading dashboard");
-  }
-});
-
-// =======================
-// ✅ MARK ATTENDANCE
-// =======================
-router.post('/mark-attendance', async (req, res) => {
-  const attendanceData = req.body.attendance;
-  const date = new Date().toISOString().split('T')[0];
-
-  try {
-    for (const studentId in attendanceData) {
-      const status = attendanceData[studentId];
-
-      const existing = await Attendance.findOne({ student_id: studentId, date });
-
-      if (!existing) {
-        await Attendance.create({ student_id: studentId, status, date });
-      }
-
-      await sendAttendanceEmail(studentId, status, date);
+    const { username, password } = req.body;
+    try {
+        const admin = await Admin.findOne({ username });
+        if (admin && await bcrypt.compare(password, admin.password)) {
+            req.session.admin = { id: admin._id, username: admin.username };
+            return res.redirect('/admin/dashboard');
+        }
+        res.send("<script>alert('Invalid Credentials'); window.location='/admin/login';</script>");
+    } catch (err) {
+        res.status(500).send("Login Error");
     }
-
-    res.send(`<h2>✅ Attendance + Emails Done</h2><a href="/admin/dashboard">Back</a>`);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error");
-  }
 });
 
-// =======================
-// 📤 UPLOAD NOTES
-// =======================
-router.post('/upload-note', upload.single('pdf'), async (req, res) => {
-  try {
-    const { title, class: className } = req.body;
-    const file = req.file;
+// ==========================================
+// 📊 DASHBOARD (PRO DESIGN)
+// ==========================================
 
-    if (!file || !title || !className) {
-      return res.send("❌ Missing data");
+router.get('/dashboard', checkAdmin, async (req, res) => {
+    try {
+        const students = await Student.find().sort({ name: 1 });
+        
+        const html = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Admin Portal | Shraddha ERP</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+            <style>
+                :root { --glass: rgba(255, 255, 255, 0.9); --primary: #2b88f0; --bg: #f0f4f8; }
+                body { background-color: var(--bg); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #334155; }
+                
+                .navbar { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+                .card { border: none; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); background: var(--glass); }
+                
+                .table thead { background-color: #f8fafc; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+                .table-hover tbody tr:hover { background-color: #f1f5f9; transition: 0.3s; }
+                
+                .status-radio input { display: none; }
+                .status-radio label { 
+                    padding: 5px 15px; border-radius: 20px; cursor: pointer; border: 1px solid #e2e8f0; 
+                    font-size: 0.85rem; transition: 0.2s; font-weight: 500;
+                }
+                .radio-p:checked + label { background: #dcfce7; color: #15803d; border-color: #10b981; }
+                .radio-a:checked + label { background: #fee2e2; color: #b91c1c; border-color: #ef4444; }
+
+                .footer { background: #1e293b; color: #94a3b8; padding: 50px 0 20px; margin-top: 60px; }
+                .footer h5 { color: #fff; font-weight: 600; }
+                .footer-link { color: #94a3b8; text-decoration: none; transition: 0.3s; }
+                .footer-link:hover { color: var(--primary); }
+
+                #loader { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); 
+                          z-index:9999; display:none; flex-direction:column; justify-content:center; align-items:center; }
+            </style>
+        </head>
+        <body>
+
+        <div id="loader"><div class="spinner-border text-primary"></div><p class="mt-2">Sending notifications...</p></div>
+
+        <nav class="navbar navbar-expand-lg py-3 mb-4">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-primary" href="#"><i class="fas fa-graduation-cap me-2"></i>SHRADDHA ERP</a>
+                <div class="ms-auto">
+                    <span class="me-3 text-muted">Welcome, <strong>${req.session.admin.username}</strong></span>
+                    <a href="/admin/logout" class="btn btn-outline-danger btn-sm rounded-pill px-3">Logout</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="mb-0 fw-bold">Daily Attendance</h4>
+                            <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">${new Date().toDateString()}</span>
+                        </div>
+                        
+                        <form id="attendanceForm" action="/admin/mark-attendance" method="POST">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Student</th>
+                                            <th>Details</th>
+                                            <th class="text-center">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${students.map(s => `
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold text-dark">${s.name}</div>
+                                                <small class="text-muted">ID: #${s._id.toString().slice(-5)}</small>
+                                            </td>
+                                            <td>
+                                                <div class="small"><i class="fas fa-envelope me-1 text-muted"></i>${s.email || 'No Email'}</div>
+                                                <div class="small"><i class="fas fa-id-card me-1 text-muted"></i>Roll: ${s.roll || 'N/A'}</div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="status-radio d-flex justify-content-center gap-2">
+                                                    <input type="radio" id="p-${s._id}" name="attendance[${s._id}]" value="Present" class="radio-p" required>
+                                                    <label for="p-${s._id}">Present</label>
+                                                    
+                                                    <input type="radio" id="a-${s._id}" name="attendance[${s._id}]" value="Absent" class="radio-a">
+                                                    <label for="a-${s._id}">Absent</label>
+                                                </div>
+                                            </td>
+                                        </tr>`).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 mt-3 py-3 rounded-pill fw-bold shadow-sm">
+                                <i class="fas fa-paper-plane me-2"></i>Submit & Notify Students
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card p-4 mb-4 bg-primary text-white">
+                        <h5 class="fw-bold mb-3">Upload Class Notes</h5>
+                        <form action="/admin/upload-note" method="POST" enctype="multipart/form-data">
+                            <input type="text" name="title" class="form-control mb-3 bg-white border-0" placeholder="Chapter Title" required>
+                            <select name="class" class="form-select mb-3 border-0" required>
+                                <option value="">Target Class</option>
+                                ${[8, 9, 10, 11, 12].map(c => `<option value="${c}">Class ${c}</option>`).join('')}
+                            </select>
+                            <input type="file" name="pdf" class="form-control mb-3 border-0" accept="application/pdf" required>
+                            <button class="btn btn-light w-100 fw-bold text-primary">Upload PDF</button>
+                        </form>
+                    </div>
+
+                    <div class="card p-4">
+                        <h5 class="fw-bold mb-3">Quick Links</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="#" class="footer-link"><i class="fas fa-user-plus me-2"></i>Add New Student</a></li>
+                            <li class="mb-2"><a href="#" class="footer-link"><i class="fas fa-file-invoice me-2"></i>Generate Reports</a></li>
+                            <li><a href="#" class="footer-link text-danger"><i class="fas fa-trash me-2"></i>Clear Records</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer mt-auto">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <h5 class="mb-3">Shraddha Classes</h5>
+                        <p class="small">Providing quality education and digital tracking for students in Maharashtra since 2010.</p>
+                        <div id="clock" class="fw-bold text-primary"></div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <h5 class="mb-3">Contact Support</h5>
+                        <p class="small mb-1"><i class="fas fa-phone me-2"></i>+91 7506420940</p>
+                        <p class="small mb-1"><i class="fas fa-envelope me-2"></i>rushikeshsakpal2000@gmail.com</p>
+                        <p class="small"><i class="fas fa-map-marker-alt me-2"></i>Sharanpur Road, Nashik 422002</p>
+                    </div>
+                    <div class="col-md-4 mb-4 text-md-end">
+                        <h5 class="mb-3">System</h5>
+                        <p class="small">Version 3.2.0 (Stable)</p>
+                        <p class="small">Maintained by <strong>Atharva More</strong></p>
+                    </div>
+                </div>
+                <hr class="border-secondary">
+                <p class="text-center small mb-0">© 2026 Shraddha ERP. All Rights Reserved.</p>
+            </div>
+        </footer>
+
+        <script>
+            document.getElementById('attendanceForm').onsubmit = () => {
+                document.getElementById('loader').style.display = 'flex';
+            };
+            
+            setInterval(() => {
+                document.getElementById('clock').innerText = new Date().toLocaleString();
+            }, 1000);
+        </script>
+        </body>
+        </html>
+        `;
+        res.send(html);
+    } catch (err) {
+        res.status(500).send("Dashboard Error");
     }
-
-    const students = await Student.find({ className });
-
-    const notes = students.map(s => ({
-      student_id: s._id,
-      title,
-      file: file.filename
-    }));
-
-    await Notes.insertMany(notes);
-
-    res.send("✅ Notes uploaded");
-
-  } catch (err) {
-    console.error(err);
-    res.send("❌ Upload failed");
-  }
 });
 
-// =======================
-// ❌ DELETE STUDENT
-// =======================
-router.post('/delete-student/:id', async (req, res) => {
-  try {
-    await Student.findByIdAndDelete(req.params.id);
-    res.redirect('/admin/dashboard');
-  } catch (err) {
-    res.send("Error deleting");
-  }
+// ==========================================
+// ⚙️ ACTIONS
+// ==========================================
+
+router.post('/mark-attendance', checkAdmin, async (req, res) => {
+    const attendanceData = req.body.attendance;
+    const date = new Date().toISOString().split('T')[0];
+
+    try {
+        if (!attendanceData) return res.redirect('/admin/dashboard');
+
+        const tasks = Object.entries(attendanceData).map(async ([studentId, status]) => {
+            await Attendance.findOneAndUpdate(
+                { student_id: studentId, date },
+                { status },
+                { upsert: true }
+            );
+            return sendAttendanceEmail(studentId, status, date);
+        });
+
+        await Promise.all(tasks);
+        res.send("<script>alert('Attendance & Emails successfully processed!'); window.location='/admin/dashboard';</script>");
+    } catch (err) {
+        res.status(500).send("Processing Error");
+    }
 });
 
-// =======================
-// 🔓 LOGOUT
-// =======================
+router.post('/upload-note', checkAdmin, upload.single('pdf'), async (req, res) => {
+    try {
+        const { title, class: className } = req.body;
+        const students = await Student.find({ className });
+
+        if (!students.length) return res.send("<script>alert('No students found in this class!'); window.location='/admin/dashboard';</script>");
+
+        const notes = students.map(s => ({
+            student_id: s._id,
+            title,
+            file: req.file.filename
+        }));
+
+        await Notes.insertMany(notes);
+        res.send("<script>alert('Notes uploaded successfully!'); window.location='/admin/dashboard';</script>");
+    } catch (err) {
+        res.send("Upload Failed");
+    }
+});
+
 router.get('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.send("Logged out");
-  });
+    req.session.destroy(() => res.redirect('/admin/login'));
 });
 
 module.exports = router;
