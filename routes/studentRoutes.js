@@ -138,6 +138,8 @@ router.get('/dashboard', async (req, res) => {
 
   const student = await Student.findById(req.session.student.id);
   const attendance = await Attendance.find({ student_id: student._id });
+  const notes = await Notes.find({ student_id: student._id });
+  const worksheets = await Worksheet.find();
 
   const total = attendance.length;
   const present = attendance.filter(a => a.status === 'Present').length;
@@ -148,7 +150,6 @@ router.get('/dashboard', async (req, res) => {
 <html>
 <head>
   <title>Student Dashboard</title>
-
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
@@ -163,9 +164,9 @@ router.get('/dashboard', async (req, res) => {
     }
 
     .main-container {
-      width: 90%;
-      max-width: 1100px;
-      height: 85vh;
+      width: 95%;
+      max-width: 1200px;
+      height: 90vh;
       background: white;
       border-radius: 20px;
       display: flex;
@@ -181,23 +182,23 @@ router.get('/dashboard', async (req, res) => {
     }
 
     .right-panel {
-      flex: 1.3;
-      padding: 30px;
+      flex: 1.5;
+      padding: 25px;
       overflow-y: auto;
     }
 
     .card-box {
       background: #f8f9fa;
       border-radius: 15px;
-      padding: 20px;
+      padding: 15px;
       text-align: center;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
-    .logout-btn {
-      background: #dc3545;
-      color: white;
-      border-radius: 8px;
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 14px;
+      color: #666;
     }
 
     .popup {
@@ -217,61 +218,40 @@ router.get('/dashboard', async (req, res) => {
 
 <div class="main-container">
 
-  <!-- LEFT PANEL -->
+  <!-- LEFT -->
   <div class="left-panel">
-    <h2>🎓 Shraddha Classes ERP</h2>
-    <p class="mt-3">Track your attendance, notes and academic progress easily.</p>
+    <h2>🎓 Shraddha ERP</h2>
+    <p class="mt-3">All your academic data in one place.</p>
 
-    <div class="mt-5">
-      <h5>👤 ${student.name}</h5>
-      <p>Student Dashboard</p>
-    </div>
+    <h5 class="mt-4">${student.name}</h5>
 
-    <div class="mt-5">
-      <a href="/" class="btn btn-light btn-sm">🏠 Home</a>
-      <a href="/students/logout" class="btn logout-btn btn-sm mt-2">Logout</a>
-    </div>
+    <a href="/" class="btn btn-light btn-sm mt-3">🏠 Home</a><br>
+    <a href="/students/logout" class="btn btn-danger btn-sm mt-2">Logout</a>
 
     <div class="mt-5">
       <small>🚀 Developed by Atharva More</small><br>
       <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" style="color:white;">
-        LinkedIn Profile
+        LinkedIn
       </a>
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
+  <!-- RIGHT -->
   <div class="right-panel">
 
-    <h4 class="mb-4">📊 Dashboard Overview</h4>
+    <h4>📊 Dashboard</h4>
 
     <div class="row g-3">
-      <div class="col-md-4">
-        <div class="card-box">
-          <h6>Total Days</h6>
-          <h2>${total}</h2>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card-box text-success">
-          <h6>Present</h6>
-          <h2>${present}</h2>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card-box text-danger">
-          <h6>Absent</h6>
-          <h2>${absent}</h2>
-        </div>
-      </div>
+      <div class="col-md-4"><div class="card-box"><h6>Total</h6><h3>${total}</h3></div></div>
+      <div class="col-md-4"><div class="card-box text-success"><h6>Present</h6><h3>${present}</h3></div></div>
+      <div class="col-md-4"><div class="card-box text-danger"><h6>Absent</h6><h3>${absent}</h3></div></div>
     </div>
 
     <hr>
 
+    <!-- ATTENDANCE -->
     <h5>📅 Attendance</h5>
-    <table class="table table-bordered mt-3">
+    <table class="table table-bordered mt-2">
       <tr><th>Date</th><th>Status</th></tr>
       ${attendance.map(a => `
         <tr>
@@ -281,18 +261,38 @@ router.get('/dashboard', async (req, res) => {
       `).join('')}
     </table>
 
+    <!-- NOTES -->
+    <h5 class="mt-4">📘 Notes</h5>
+    ${notes.length === 0 ? "<p>No notes available</p>" : notes.map(n => `
+      <div>
+        ${n.title} - <a href="/uploads/${n.file}" target="_blank">View</a>
+      </div>
+    `).join('')}
+
+    <!-- WORKSHEETS -->
+    <h5 class="mt-4">📝 Worksheets</h5>
+    ${worksheets.length === 0 ? "<p>No worksheets</p>" : worksheets.map(w => `
+      <div>
+        ${w.title} - <a href="/uploads/${w.file}" target="_blank">View</a>
+      </div>
+    `).join('')}
+
+    <!-- FOOTER -->
+    <div class="footer">
+      🚀 Developed & Maintained by <b>Atharva Dhananjay More</b><br>
+      <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank">
+        Connect on LinkedIn
+      </a>
+    </div>
+
   </div>
 
 </div>
 
-<!-- 🔥 POPUP -->
+<!-- POPUP -->
 <div class="popup" id="popup">
-  <h5>👋 Welcome!</h5>
-  <p>Developed by</p>
-  <b>Atharva Dhananjay More</b><br><br>
-  <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" class="btn btn-primary btn-sm">
-    Visit LinkedIn
-  </a>
+  <b>Atharva Dhananjay More</b><br>
+  <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank">Visit LinkedIn</a>
 </div>
 
 <script>
