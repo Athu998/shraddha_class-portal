@@ -147,66 +147,57 @@ router.get('/dashboard', async (req, res) => {
 <!DOCTYPE html>
 <html>
 <head>
-  <title>ERP Dashboard</title>
+  <title>Student Dashboard</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
     body {
-      background: linear-gradient(135deg, #1f2937, #111827);
-      color: white;
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
       font-family: 'Segoe UI';
-    }
-
-    .navbar {
-      background: rgba(0,0,0,0.7);
-    }
-
-    .card {
-      border-radius: 15px;
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(10px);
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    .table {
-      background: white;
-      color: black;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    /* 🔥 GOOGLE LOADER */
-    .loader {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      background: #111;
       display: flex;
-      justify-content: center;
       align-items: center;
-      z-index: 9999;
+      justify-content: center;
     }
 
-    .loader div {
-      width: 15px;
-      height: 15px;
-      margin: 5px;
-      border-radius: 50%;
-      background: #4285F4;
-      animation: bounce 0.6s infinite alternate;
+    .main-container {
+      width: 90%;
+      max-width: 1100px;
+      height: 85vh;
+      background: white;
+      border-radius: 20px;
+      display: flex;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
     }
 
-    .loader div:nth-child(2) { background: #EA4335; animation-delay: 0.2s; }
-    .loader div:nth-child(3) { background: #FBBC05; animation-delay: 0.4s; }
-    .loader div:nth-child(4) { background: #34A853; animation-delay: 0.6s; }
+    .left-panel {
+      flex: 1;
+      background: linear-gradient(135deg, #0072ff, #00c6ff);
+      color: white;
+      padding: 40px;
+    }
 
-    @keyframes bounce {
-      to { transform: translateY(-15px); }
+    .right-panel {
+      flex: 1.3;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .card-box {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .logout-btn {
+      background: #dc3545;
+      color: white;
+      border-radius: 8px;
     }
 
     .popup {
@@ -214,83 +205,82 @@ router.get('/dashboard', async (req, res) => {
       top: 20px;
       right: 20px;
       background: white;
-      color: black;
       padding: 20px;
       border-radius: 10px;
       display: none;
-      z-index: 9999;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 50px;
-      opacity: 0.8;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
   </style>
 </head>
 
 <body>
 
-<!-- 🔥 LOADER -->
-<div class="loader" id="loader">
-  <div></div><div></div><div></div><div></div>
-</div>
+<div class="main-container">
 
-<nav class="navbar p-3 d-flex justify-content-between">
-  <h4>🎓 Shraddha ERP</h4>
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <h2>🎓 Shraddha Classes ERP</h2>
+    <p class="mt-3">Track your attendance, notes and academic progress easily.</p>
 
-  <div>
-    <a href="/" class="btn btn-light btn-sm">🏠 Home</a>
-    <a href="/students/logout" class="btn btn-danger btn-sm">Logout</a>
-  </div>
-</nav>
-
-<div class="container mt-4">
-
-  <h5>Welcome, ${student.name}</h5>
-
-  <div class="row text-center g-4 mt-2">
-    <div class="col-md-4">
-      <div class="card p-4">
-        <h5>Total Days</h5>
-        <h1>${total}</h1>
-      </div>
+    <div class="mt-5">
+      <h5>👤 ${student.name}</h5>
+      <p>Student Dashboard</p>
     </div>
 
-    <div class="col-md-4">
-      <div class="card p-4 text-success">
-        <h5>Present</h5>
-        <h1>${present}</h1>
-      </div>
+    <div class="mt-5">
+      <a href="/" class="btn btn-light btn-sm">🏠 Home</a>
+      <a href="/students/logout" class="btn logout-btn btn-sm mt-2">Logout</a>
     </div>
 
-    <div class="col-md-4">
-      <div class="card p-4 text-danger">
-        <h5>Absent</h5>
-        <h1>${absent}</h1>
-      </div>
+    <div class="mt-5">
+      <small>🚀 Developed by Atharva More</small><br>
+      <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" style="color:white;">
+        LinkedIn Profile
+      </a>
     </div>
   </div>
 
-  <hr>
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
 
-  <h4>📅 Attendance</h4>
+    <h4 class="mb-4">📊 Dashboard Overview</h4>
 
-  <table class="table mt-3">
-    <tr><th>Date</th><th>Status</th></tr>
-    ${attendance.map(a => `
-      <tr>
-        <td>${new Date(a.date).toISOString().split('T')[0]}</td>
-        <td>${a.status}</td>
-      </tr>
-    `).join('')}
-  </table>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="card-box">
+          <h6>Total Days</h6>
+          <h2>${total}</h2>
+        </div>
+      </div>
 
-  <div class="footer">
-    🚀 Developed & Maintained by <b>Atharva Dhananjay More</b><br>
-    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" style="color:lightblue;">
-      Connect on LinkedIn
-    </a>
+      <div class="col-md-4">
+        <div class="card-box text-success">
+          <h6>Present</h6>
+          <h2>${present}</h2>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card-box text-danger">
+          <h6>Absent</h6>
+          <h2>${absent}</h2>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <h5>📅 Attendance</h5>
+    <table class="table table-bordered mt-3">
+      <tr><th>Date</th><th>Status</th></tr>
+      ${attendance.map(a => `
+        <tr>
+          <td>${new Date(a.date).toISOString().split('T')[0]}</td>
+          <td>${a.status}</td>
+        </tr>
+      `).join('')}
+    </table>
+
   </div>
 
 </div>
@@ -298,7 +288,7 @@ router.get('/dashboard', async (req, res) => {
 <!-- 🔥 POPUP -->
 <div class="popup" id="popup">
   <h5>👋 Welcome!</h5>
-  <p>This ERP is built by</p>
+  <p>Developed by</p>
   <b>Atharva Dhananjay More</b><br><br>
   <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" class="btn btn-primary btn-sm">
     Visit LinkedIn
@@ -306,17 +296,10 @@ router.get('/dashboard', async (req, res) => {
 </div>
 
 <script>
-  // Loader remove after load
-  window.onload = () => {
-    document.getElementById("loader").style.display = "none";
-  };
-
-  // Popup after 5 sec
   setTimeout(() => {
     document.getElementById("popup").style.display = "block";
   }, 5000);
 
-  // Auto hide popup
   setTimeout(() => {
     document.getElementById("popup").style.display = "none";
   }, 15000);
