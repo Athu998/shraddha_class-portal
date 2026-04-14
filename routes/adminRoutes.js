@@ -167,7 +167,7 @@ router.get('/dashboard', async (req, res) => {
     </html>
     `;
 
-    res.send(html);
+    res.sendFile(path.join(__dirname, '../public/admin-dashboard.html'));
   } catch (err) {
     console.error("Dashboard error:", err);
     res.status(500).send("Error loading dashboard");
