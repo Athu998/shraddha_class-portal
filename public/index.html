@@ -14,7 +14,6 @@
       font-family: 'Segoe UI', sans-serif;
     }
 
-    /* Hero */
     .hero-section {
       background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)),
       url('https://images.unsplash.com/photo-1524069290683-0457abfe42c3') center/cover;
@@ -45,7 +44,6 @@
       transform: scale(1.05);
     }
 
-    /* Features */
     .feature-card {
       border-radius: 12px;
       transition: 0.3s;
@@ -55,7 +53,6 @@
       transform: translateY(-5px);
     }
 
-    /* Footer */
     .footer {
       background: linear-gradient(135deg,#1e293b,#0f172a);
       color: #e2e8f0;
@@ -71,7 +68,7 @@
 
 <body>
 
-<!-- Hero -->
+<!-- HERO -->
 <section class="hero-section">
   <div class="container">
     <div class="content">
@@ -81,7 +78,6 @@
       </p>
 
       <div class="mt-4">
-        <!-- <a href="/students/register-form" class="btn btn-success btn-custom">🎓 Student Register</a> -->
         <a href="/students/login-form" class="btn btn-outline-light btn-custom">🔐 Student Login</a>
         <a href="/admin/admin-login" class="btn btn-warning btn-custom">🛠️ Admin Login</a>
       </div>
@@ -89,13 +85,12 @@
   </div>
 </section>
 
-<!-- Features -->
+<!-- FEATURES -->
 <section class="py-5 bg-light">
   <div class="container text-center">
     <h2 class="mb-4">Why Choose Us?</h2>
 
     <div class="row g-4">
-
       <div class="col-md-4">
         <div class="card feature-card p-3 shadow">
           <i class="bi bi-book fs-1 text-primary"></i>
@@ -116,9 +111,11 @@
           <h5>Notes Access</h5>
         </div>
       </div>
-
     </div>
-    <!-- 🔥 POPUP -->
+  </div>
+</section>
+
+<!-- 🔥 POPUP -->
 <div id="popup" style="
   position: fixed;
   bottom: 20px;
@@ -131,23 +128,18 @@
   max-width: 250px;
   z-index: 9999;
 ">
-
   <p style="margin:0; font-size:14px;">
     🚀 Developed by 
-    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" style="color:#007bff;">
+    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank">
       <b>Atharva More</b>
     </a>
   </p>
-
   <p style="margin:5px 0 0; font-size:13px;">
     Crafted with ❤️ in Mumbai/Nashik 🇮🇳
   </p>
-
 </div>
-  </div>
-  
-</section>
 
+<!-- FOOTER -->
 <footer class="footer">
   <div class="container">
     <div class="row align-items-center">
@@ -163,14 +155,12 @@
 
         <div class="mt-3" style="font-size:14px; line-height:1.6;">
           🚀 Developed & Maintained by 
-          <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" style="color:#38bdf8;">
+          <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank">
             <strong>Atharva Dhananjay More</strong>
           </a><br>
 
           Full Stack Developer | ERP & Web Solutions<br>
-
           Empowering education through smart digital solutions<br>
-
           Crafted with ❤️ in Mumbai 🇮🇳 / Nashik 🇮🇳<br>
 
           💼 Want a website like this?
@@ -191,6 +181,7 @@
   </div>
 </footer>
 
+<!-- SCRIPTS -->
 <script>
   function updateDateTime() {
     document.getElementById("datetime").innerText = new Date().toLocaleString();
@@ -198,27 +189,22 @@
   setInterval(updateDateTime, 1000);
   updateDateTime();
 </script>
- <script>
+
+<script>
   const popup = document.getElementById("popup");
 
   function showPopup() {
     popup.style.display = "block";
-
     setTimeout(() => {
       popup.style.display = "none";
     }, 3000);
   }
 
-  // First show after 2 sec
   setTimeout(() => {
     showPopup();
-
-    // Repeat loop properly
-    setInterval(() => {
-      showPopup();
-    }, 5000);
-
+    setInterval(showPopup, 5000);
   }, 2000);
 </script>
+
 </body>
 </html>
