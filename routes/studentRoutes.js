@@ -146,10 +146,12 @@ router.get('/dashboard', async (req, res) => {
   const absent = total - present;
 
  res.send(`
+
 <!DOCTYPE html>
 <html>
 <head>
   <title>Student Dashboard</title>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
@@ -225,12 +227,11 @@ router.get('/dashboard', async (req, res) => {
 
 <!-- HEADER -->
 <div class="header">
-  <div class="logo">🎓 SHRADDDHA ERP</div>
+  <div class="logo">🎓 SHRADDDHA Classes Developed by <b>Atharva More </b></div>
 
   <div>
     <small class="me-3">🚀 Developed by <b>Atharva More</b></small>
     <a href="/" class="btn btn-light btn-sm">Home</a>
-    <a href="/students/logout" class="btn btn-danger btn-sm">Logout</a>
   </div>
 </div>
 
@@ -275,7 +276,28 @@ router.get('/dashboard', async (req, res) => {
       `).join('')}
     </table>
   </div>
+<script>
+  const ctx = document.getElementById('attendanceChart');
 
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Present', 'Absent'],
+      datasets: [{
+        data: [${present}, ${absent}],
+        backgroundColor: ['#28a745', '#dc3545']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
+</script>
   <!-- NOTES -->
   <div class="section-box">
     <h5>📘 Notes</h5>
@@ -330,6 +352,11 @@ router.get('/dashboard', async (req, res) => {
 </script>
 
 </body>
+<div class="section-box">
+  <h5>📊 Attendance Overview</h5>
+  <canvas id="attendanceChart"></canvas>
+</div>
+
 </html>
 `);
 });
