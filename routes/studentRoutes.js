@@ -146,79 +146,47 @@ router.get('/dashboard', async (req, res) => {
   const absent = total - present;
 
  res.send(`
-
 <!DOCTYPE html>
 <html>
 <head>
   <title>Student Dashboard</title>
-   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-    body {
-      background: #f4f6f9;
-      font-family: 'Segoe UI';
-    }
+    body { background:#f4f6f9; font-family:'Segoe UI'; }
 
     .header {
-      background: white;
-      padding: 15px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      background:white; padding:15px 30px;
+      display:flex; justify-content:space-between;
+      box-shadow:0 2px 10px rgba(0,0,0,0.05);
     }
 
-    .logo {
-      font-weight: bold;
-      font-size: 20px;
-      color: #007bff;
-    }
+    .logo { font-weight:bold; color:#007bff; }
 
-    .main-container {
-      max-width: 1100px;
-      margin: auto;
-      margin-top: 30px;
-    }
+    .main-container { max-width:1100px; margin:auto; margin-top:30px; }
 
-    .card-box {
-      background: white;
-      border-radius: 15px;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    }
-
-    .section-box {
-      background: white;
-      border-radius: 15px;
-      padding: 20px;
-      margin-top: 20px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    .card-box, .section-box {
+      background:white; border-radius:15px;
+      padding:20px; margin-top:20px;
+      box-shadow:0 5px 15px rgba(0,0,0,0.05);
     }
 
     .footer {
-      background: #0b1a2f;
-      color: #ccc;
-      padding: 30px;
-      margin-top: 40px;
-      text-align: center;
+      background:#0b1a2f; color:#ccc;
+      padding:30px; margin-top:40px; text-align:center;
     }
 
-    .footer a {
-      color: #00c6ff;
-      text-decoration: none;
-    }
+    .dev-link { color:#00c6ff; text-decoration:none; }
+    .dev-link:hover { color:#0dcaf0; text-decoration:underline; }
 
     .popup {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      display: none;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      position:fixed; top:20px; right:20px;
+      background:white; padding:20px;
+      border-radius:10px; display:none;
+      box-shadow:0 10px 25px rgba(0,0,0,0.2);
+      max-width:250px;
     }
   </style>
 </head>
@@ -227,59 +195,38 @@ router.get('/dashboard', async (req, res) => {
 
 <!-- HEADER -->
 <div class="header">
-  <div class="logo">🎓 SHRADDDHA Classes </div>
+  <div class="logo">🎓 SHRADDDHA Classes</div>
 
   <div>
-  <small class="me-3">
     🚀 Developed by 
-    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" 
-       target="_blank" 
-       class="dev-link" 
-       style="color:#00c6ff; text-decoration:none;">
+    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" class="dev-link">
       <b>Atharva More</b>
     </a>
-  </small>
-
-  <a href="/" class="btn btn-light btn-sm">Home</a>
-</div>
-.dev-link:hover {
-  color: #0dcaf0;
-  text-decoration: underline;
-}
+    <a href="/" class="btn btn-light btn-sm ms-2">Home</a>
+  </div>
 </div>
 
 <div class="main-container">
 
-  <h5 class="mb-3">Welcome, ${student.name}</h5>
+  <h5>Welcome, ${student.name}</h5>
 
   <!-- CARDS -->
   <div class="row g-3">
-    <div class="col-md-4">
-      <div class="card-box">
-        <h6>Total Days</h6>
-        <h3>${total}</h3>
-      </div>
-    </div>
+    <div class="col-md-4"><div class="card-box"><h6>Total</h6><h3>${total}</h3></div></div>
+    <div class="col-md-4"><div class="card-box text-success"><h6>Present</h6><h3>${present}</h3></div></div>
+    <div class="col-md-4"><div class="card-box text-danger"><h6>Absent</h6><h3>${absent}</h3></div></div>
+  </div>
 
-    <div class="col-md-4">
-      <div class="card-box text-success">
-        <h6>Present</h6>
-        <h3>${present}</h3>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card-box text-danger">
-        <h6>Absent</h6>
-        <h3>${absent}</h3>
-      </div>
-    </div>
+  <!-- GRAPH -->
+  <div class="section-box">
+    <h5>📊 Attendance Overview</h5>
+    <canvas id="attendanceChart"></canvas>
   </div>
 
   <!-- ATTENDANCE -->
   <div class="section-box">
     <h5>📅 Attendance</h5>
-    <table class="table mt-3">
+    <table class="table">
       <tr><th>Date</th><th>Status</th></tr>
       ${attendance.map(a => `
         <tr>
@@ -289,88 +236,67 @@ router.get('/dashboard', async (req, res) => {
       `).join('')}
     </table>
   </div>
+
   <!-- NOTES -->
   <div class="section-box">
     <h5>📘 Notes</h5>
-    ${notes.length === 0 ? "<p>No notes available</p>" : notes.map(n => `
-      <div>
-        ${n.title} - <a href="/uploads/${n.file}" target="_blank">View</a>
-      </div>
-    `).join('')}
+    ${notes.map(n => `${n.title} - <a href="/uploads/${n.file}" target="_blank">View</a>`).join('<br>')}
   </div>
 
   <!-- WORKSHEETS -->
   <div class="section-box">
     <h5>📝 Worksheets</h5>
-    ${worksheets.length === 0 ? "<p>No worksheets</p>" : worksheets.map(w => `
-      <div>
-        ${w.title} - <a href="/uploads/${w.file}" target="_blank">View</a>
-      </div>
-    `).join('')}
+    ${worksheets.map(w => `${w.title} - <a href="/uploads/${w.file}" target="_blank">View</a>`).join('<br>')}
   </div>
 
 </div>
 
 <!-- FOOTER -->
 <div class="footer">
+  🚀 Developed & Maintained by 
+  <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" class="dev-link">
+    <b>Atharva Dhananjay More</b>
+  </a><br>
 
-  <p style="font-size:14px; opacity:0.9;">
-    🚀 Developed & Maintained by 
-    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" 
-       target="_blank" 
-       class="dev-link">
-      <b>Atharva Dhananjay More</b>
-    </a>
-  </p>
+  Full Stack Developer | ERP Solutions <br>
+  Crafted with ❤️ in Mumbai 🇮🇳 <br>
 
-  <p style="margin-top:5px; font-size:13px; opacity:0.7;">
-    Full Stack Developer | Building modern ERP & web solutions
-  </p>
-
-  <p style="margin-top:5px; font-size:13px; opacity:0.7;">
-    Crafted with ❤️ in Mumbai 🇮🇳
-  </p>
-
-  <!-- 🔥 MARKETING LINE -->
-  <p style="margin-top:10px; font-size:13px; color:#00c6ff;">
-    💼 Want a website like this at low cost? 
-    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" class="dev-link">
-      Contact Developer
-    </a>
-  </p>
-.dev-link {
-  color: #00c6ff;
-  text-decoration: none;
-}
-
-.dev-link:hover {
-  color: #0dcaf0;
-  text-decoration: underline;
-}
+  💼 Want a website like this? 
+  <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" class="dev-link">
+    Contact Developer
+  </a>
 </div>
 
-<!-- POPUP -->
+<!-- POPUP (same as footer) -->
 <div class="popup" id="popup">
-  <b>Atharva Dhananjay More</b><br>
-  <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank">Visit LinkedIn</a>
+  🚀 <b>Atharva Dhananjay More</b><br>
+  Full Stack Developer<br><br>
+
+  💼 Need a website?<br>
+  <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" class="dev-link">
+    Contact Me
+  </a>
 </div>
 
 <script>
-  setTimeout(() => {
-    document.getElementById("popup").style.display = "block";
-  }, 5000);
+  // Graph
+  new Chart(document.getElementById('attendanceChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Present','Absent'],
+      datasets: [{
+        data: [${present}, ${absent}],
+        backgroundColor: ['#28a745','#dc3545']
+      }]
+    }
+  });
 
-  setTimeout(() => {
-    document.getElementById("popup").style.display = "none";
-  }, 15000);
+  // Popup
+  setTimeout(()=>{ popup.style.display='block'; },5000);
+  setTimeout(()=>{ popup.style.display='none'; },15000);
 </script>
 
 </body>
-<div class="section-box">
-  <h5>📊 Attendance Overview</h5>
-  <canvas id="attendanceChart"></canvas>
-</div>
-
 </html>
 `);
 });
