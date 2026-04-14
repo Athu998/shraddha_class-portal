@@ -63,41 +63,74 @@ router.post('/register', async (req, res) => {
       to: email,
       subject: "🎉 Welcome to Shraddha Coaching Classes",
       html: `
-      <div style="font-family:Segoe UI;max-width:600px;margin:auto;border:1px solid #ddd;border-radius:10px;overflow:hidden">
-        
-        <div style="background:#007bff;color:white;padding:20px;text-align:center">
-          <h2>🎓 Shraddha Coaching Classes</h2>
-          <p>Your Success Journey Starts Here 🚀</p>
-        </div>
+<div style="font-family:Segoe UI, sans-serif; max-width:600px; margin:auto; border:1px solid #ddd; border-radius:12px; overflow:hidden">
 
-        <div style="padding:20px">
-          <h3>Hello ${name}, 👋</h3>
-          <p>Your registration was successfully completed.</p>
+  <!-- HEADER -->
+  <div style="background:#007bff; color:white; padding:20px; text-align:center">
+    <h2 style="margin:0;">🎓 Shraddha Coaching Classes</h2>
+    <p style="margin:5px 0 0;">Your Success Journey Starts Here 🚀</p>
+  </div>
 
-          <h4>📋 Your Details:</h4>
-          <ul>
-            <li><b>Class:</b> ${className}</li>
-            <li><b>Email:</b> ${email}</li>
-            <li><b>School:</b> ${school_name}</li>
-          </ul>
+  <!-- CONTENT -->
+  <div style="padding:20px">
+    <h3>Hello ${name}, 👋</h3>
+    <p>Your registration was successfully completed.</p>
 
-          <p>👉 Login and start tracking your attendance, notes & performance.</p>
+    <h4>📋 Your Details:</h4>
+    <ul>
+      <li><b>Class:</b> ${className}</li>
+      <li><b>Email:</b> ${email}</li>
+      <li><b>School:</b> ${school_name}</li>
+    </ul>
 
-          <a href="https://your-app-link.onrender.com/students/login-form"
-             style="display:inline-block;padding:10px 20px;background:#28a745;color:white;text-decoration:none;border-radius:5px">
-             🔐 Login Now
-          </a>
-        </div>
+    <p>👉 Login and start tracking your attendance, notes & performance.</p>
 
-        <div style="background:#f1f1f1;padding:15px;text-align:center">
-          <p><b>Developed by Atharva Dhananjay More</b></p>
-          <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank">
-            🔗 LinkedIn Profile
-          </a>
-        </div>
+    <a href="https://shraddha-classes.onrender.com/"
+       style="display:inline-block;padding:10px 20px;background:#28a745;color:white;text-decoration:none;border-radius:5px">
+       🔐 Login Now
+    </a>
+  </div>
 
-      </div>
-      `
+  <!-- FOOTER / BRANDING -->
+  <div style="background:#f9fafb; padding:15px; text-align:center; font-size:13px; color:#555">
+
+    <p>
+      🚀 Developed & Maintained by 
+      <a href="https://www.linkedin.com/in/atharva-more-34a015194/" 
+         target="_blank" 
+         style="color:#007bff; text-decoration:none;">
+        <b>Atharva Dhananjay More</b>
+      </a>
+    </p>
+
+    <p>Full Stack Developer | ERP & Web Solutions</p>
+
+    <p>
+      Empowering education through smart digital solutions 🚀<br>
+      Crafted with ❤️ in Mumbai 🇮🇳 / Nashik 🇮🇳
+    </p>
+
+    <!-- WHATSAPP BUTTON -->
+    <div style="margin-top:10px;">
+      <a href="https://wa.me/919325155560?text=Hi%20I%20want%20a%20website%20like%20this"
+         target="_blank"
+         style="display:inline-block;padding:8px 15px;background:#25D366;color:white;border-radius:20px;text-decoration:none;font-weight:bold;">
+         💬 Chat on WhatsApp
+      </a>
+    </div>
+
+    <!-- CONTACT CTA -->
+    <p style="margin-top:10px;">
+      💼 Want a website like this? 
+      <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" style="color:#007bff;">
+        Contact Developer
+      </a>
+    </p>
+
+  </div>
+
+</div>
+`
     });
 
     res.send(`<h2>✅ Registered Successfully!</h2><a href="/students/login-form">Login</a>`);
