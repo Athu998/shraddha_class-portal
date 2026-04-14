@@ -218,10 +218,14 @@ router.get('/dashboard', async (req, res) => {
   </div>
 
   <!-- GRAPH -->
-  <div class="section-box">
-    <h5>📊 Attendance Overview</h5>
+  <div class="section-box text-center">
+  <h5>📊 Attendance Overview</h5>
+
+  <div style="max-width:300px; margin:auto;">
     <canvas id="attendanceChart"></canvas>
   </div>
+
+</div>
 
   <!-- ATTENDANCE -->
   <div class="section-box">
@@ -279,23 +283,28 @@ router.get('/dashboard', async (req, res) => {
 </div>
 
 <script>
-  // Graph
   new Chart(document.getElementById('attendanceChart'), {
     type: 'doughnut',
     data: {
       labels: ['Present','Absent'],
       datasets: [{
         data: [${present}, ${absent}],
-        backgroundColor: ['#28a745','#dc3545']
+        backgroundColor: ['#28a745','#dc3545'],
+        borderWidth: 1
       }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '70%', // donut size
+      plugins: {
+        legend: {
+          position: 'top'
+        }
+      }
     }
   });
-
-  // Popup
-  setTimeout(()=>{ popup.style.display='block'; },5000);
-  setTimeout(()=>{ popup.style.display='none'; },15000);
 </script>
-
 </body>
 </html>
 `);
