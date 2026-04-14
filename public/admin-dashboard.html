@@ -3,95 +3,192 @@
 <head>
   <meta charset="UTF-8">
   <title>Admin Dashboard</title>
+
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f4f7fe;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      height: 100vh;
+      background: #1e293b;
+      color: white;
+      position: fixed;
+      width: 240px;
+    }
+
+    .sidebar h3 {
+      font-weight: bold;
+    }
+
+    .sidebar p {
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .sidebar p:hover {
+      background: #334155;
+    }
+
+    /* Main */
+    .main {
+      margin-left: 240px;
+    }
+
+    /* Navbar */
+    .topbar {
+      background: white;
+      padding: 15px 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Cards */
+    .card {
+      border: none;
+      border-radius: 12px;
+    }
+
+    .card h2 {
+      font-weight: bold;
+    }
+
+    /* Buttons */
+    .btn-success {
+      border-radius: 8px;
+    }
+
+    .btn-primary {
+      border-radius: 8px;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 15px;
+      background: white;
+      margin-top: 30px;
+      border-top: 1px solid #ddd;
+    }
+
+    .footer a {
+      text-decoration: none;
+      color: #0a66c2;
+      font-weight: 500;
+    }
+  </style>
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container-fluid">
-  <div class="row">
+<!-- Sidebar -->
+<div class="sidebar p-4">
+  <h3>📊 ERP Panel</h3>
+  <hr>
 
-    <!-- Sidebar -->
-    <div class="col-md-3 bg-dark text-white p-4" style="height:100vh;">
-      <h3>📊 Admin Panel</h3>
-      <hr>
-      <p>Dashboard</p>
-      <p>Students</p>
-      <p>Attendance</p>
-      <p>Notes</p>
-      <a href="/admin/logout" class="btn btn-danger mt-3">Logout</a>
+  <p>📊 Dashboard</p>
+  <p>👨‍🎓 Students</p>
+  <p>📅 Attendance</p>
+  <p>📝 Notes</p>
+
+  <a href="/admin/logout" class="btn btn-danger w-100 mt-4">Logout</a>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <h4>👋 Welcome, Admin</h4>
+    <span class="text-muted">Admin Panel</span>
+  </div>
+
+  <div class="container-fluid p-4">
+
+    <!-- Cards -->
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card shadow p-3 text-center">
+          <h6>Total Students</h6>
+          <h2 class="text-primary">120</h2>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow p-3 text-center">
+          <h6>Present Today</h6>
+          <h2 class="text-success">85</h2>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow p-3 text-center">
+          <h6>Notes Uploaded</h6>
+          <h2 class="text-warning">12</h2>
+        </div>
+      </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="col-md-9 p-4">
+    <!-- Attendance -->
+    <div class="card mt-4 shadow p-3">
+      <h5 class="mb-3">📋 Mark Attendance</h5>
 
-      <h2>👋 Welcome, Admin</h2>
+      <table class="table table-hover align-middle">
+        <thead class="table-primary">
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+          </tr>
+        </thead>
 
-      <!-- Cards -->
-      <div class="row mt-4">
-        <div class="col-md-4">
-          <div class="card text-center p-3 shadow">
-            <h5>Total Students</h5>
-            <h2>120</h2>
-          </div>
-        </div>
+        <tbody>
+          <tr>
+            <td>Student Name</td>
+            <td>email@gmail.com</td>
+            <td>
+              <input type="radio" name="s1"> Present
+              <input type="radio" name="s1" class="ms-2"> Absent
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-        <div class="col-md-4">
-          <div class="card text-center p-3 shadow">
-            <h5>Present Today</h5>
-            <h2>85</h2>
-          </div>
-        </div>
+      <button class="btn btn-success">Submit Attendance</button>
+    </div>
 
-        <div class="col-md-4">
-          <div class="card text-center p-3 shadow">
-            <h5>Notes Uploaded</h5>
-            <h2>12</h2>
-          </div>
-        </div>
-      </div>
+    <!-- Upload Notes -->
+    <div class="card mt-4 shadow p-3">
+      <h5 class="mb-3">📤 Upload Notes</h5>
 
-      <!-- Attendance Table -->
-      <div class="card mt-4 p-3 shadow">
-        <h4>📋 Mark Attendance</h4>
+      <input class="form-control mb-2" placeholder="Note Title">
+      <input class="form-control mb-2" placeholder="Student ID">
+      <input type="file" class="form-control mb-2">
 
-        <table class="table table-hover mt-3">
-          <thead class="table-primary">
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Student Name</td>
-              <td>email@gmail.com</td>
-              <td>
-                <input type="radio"> Present
-                <input type="radio"> Absent
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <button class="btn btn-success">Submit Attendance</button>
-      </div>
-
-      <!-- Upload Notes -->
-      <div class="card mt-4 p-3 shadow">
-        <h4>📤 Upload Notes</h4>
-
-        <input class="form-control mb-2" placeholder="Note Title">
-        <input class="form-control mb-2" placeholder="Student ID">
-        <input type="file" class="form-control mb-2">
-
-        <button class="btn btn-primary">Upload</button>
-      </div>
-
+      <button class="btn btn-primary">Upload</button>
     </div>
 
   </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Developed by <b>Atharva More</b> |
+    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank">
+      <i class="bi bi-linkedin"></i> LinkedIn
+    </a>
+  </div>
+
 </div>
 
 </body>
