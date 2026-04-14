@@ -145,7 +145,7 @@ router.get('/dashboard', async (req, res) => {
   const present = attendance.filter(a => a.status === 'Present').length;
   const absent = total - present;
 
-  res.send(`
+ res.send(`
 <!DOCTYPE html>
 <html>
 <head>
@@ -154,51 +154,58 @@ router.get('/dashboard', async (req, res) => {
 
   <style>
     body {
-      margin: 0;
-      height: 100vh;
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      background: #f4f6f9;
       font-family: 'Segoe UI';
+    }
+
+    .header {
+      background: white;
+      padding: 15px 30px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: #007bff;
     }
 
     .main-container {
-      width: 95%;
-      max-width: 1200px;
-      height: 90vh;
-      background: white;
-      border-radius: 20px;
-      display: flex;
-      overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-    }
-
-    .left-panel {
-      flex: 1;
-      background: linear-gradient(135deg, #0072ff, #00c6ff);
-      color: white;
-      padding: 40px;
-    }
-
-    .right-panel {
-      flex: 1.5;
-      padding: 25px;
-      overflow-y: auto;
+      max-width: 1100px;
+      margin: auto;
+      margin-top: 30px;
     }
 
     .card-box {
-      background: #f8f9fa;
+      background: white;
       border-radius: 15px;
-      padding: 15px;
+      padding: 20px;
       text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .section-box {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
 
     .footer {
-      margin-top: 30px;
+      background: #0b1a2f;
+      color: #ccc;
+      padding: 30px;
+      margin-top: 40px;
       text-align: center;
-      font-size: 14px;
-      color: #666;
+    }
+
+    .footer a {
+      color: #00c6ff;
+      text-decoration: none;
     }
 
     .popup {
@@ -216,42 +223,49 @@ router.get('/dashboard', async (req, res) => {
 
 <body>
 
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">🎓 SHRADDDHA ERP</div>
+
+  <div>
+    <small class="me-3">🚀 Developed by <b>Atharva More</b></small>
+    <a href="/" class="btn btn-light btn-sm">Home</a>
+    <a href="/students/logout" class="btn btn-danger btn-sm">Logout</a>
+  </div>
+</div>
+
 <div class="main-container">
 
-  <!-- LEFT -->
-  <div class="left-panel">
-    <h2>🎓 Shraddha ERP</h2>
-    <p class="mt-3">All your academic data in one place.</p>
+  <h5 class="mb-3">Welcome, ${student.name}</h5>
 
-    <h5 class="mt-4">${student.name}</h5>
+  <!-- CARDS -->
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="card-box">
+        <h6>Total Days</h6>
+        <h3>${total}</h3>
+      </div>
+    </div>
 
-    <a href="/" class="btn btn-light btn-sm mt-3">🏠 Home</a><br>
-    <a href="/students/logout" class="btn btn-danger btn-sm mt-2">Logout</a>
+    <div class="col-md-4">
+      <div class="card-box text-success">
+        <h6>Present</h6>
+        <h3>${present}</h3>
+      </div>
+    </div>
 
-    <div class="mt-5">
-      <small>🚀 Developed by Atharva More</small><br>
-      <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" style="color:white;">
-        LinkedIn
-      </a>
+    <div class="col-md-4">
+      <div class="card-box text-danger">
+        <h6>Absent</h6>
+        <h3>${absent}</h3>
+      </div>
     </div>
   </div>
 
-  <!-- RIGHT -->
-  <div class="right-panel">
-
-    <h4>📊 Dashboard</h4>
-
-    <div class="row g-3">
-      <div class="col-md-4"><div class="card-box"><h6>Total</h6><h3>${total}</h3></div></div>
-      <div class="col-md-4"><div class="card-box text-success"><h6>Present</h6><h3>${present}</h3></div></div>
-      <div class="col-md-4"><div class="card-box text-danger"><h6>Absent</h6><h3>${absent}</h3></div></div>
-    </div>
-
-    <hr>
-
-    <!-- ATTENDANCE -->
+  <!-- ATTENDANCE -->
+  <div class="section-box">
     <h5>📅 Attendance</h5>
-    <table class="table table-bordered mt-2">
+    <table class="table mt-3">
       <tr><th>Date</th><th>Status</th></tr>
       ${attendance.map(a => `
         <tr>
@@ -260,33 +274,43 @@ router.get('/dashboard', async (req, res) => {
         </tr>
       `).join('')}
     </table>
+  </div>
 
-    <!-- NOTES -->
-    <h5 class="mt-4">📘 Notes</h5>
+  <!-- NOTES -->
+  <div class="section-box">
+    <h5>📘 Notes</h5>
     ${notes.length === 0 ? "<p>No notes available</p>" : notes.map(n => `
       <div>
         ${n.title} - <a href="/uploads/${n.file}" target="_blank">View</a>
       </div>
     `).join('')}
+  </div>
 
-    <!-- WORKSHEETS -->
-    <h5 class="mt-4">📝 Worksheets</h5>
+  <!-- WORKSHEETS -->
+  <div class="section-box">
+    <h5>📝 Worksheets</h5>
     ${worksheets.length === 0 ? "<p>No worksheets</p>" : worksheets.map(w => `
       <div>
         ${w.title} - <a href="/uploads/${w.file}" target="_blank">View</a>
       </div>
     `).join('')}
-
-    <!-- FOOTER -->
-    <div class="footer">
-      🚀 Developed & Maintained by <b>Atharva Dhananjay More</b><br>
-      <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank">
-        Connect on LinkedIn
-      </a>
-    </div>
-
   </div>
 
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>📅 ${new Date().toLocaleString()}</p>
+
+  <div class="mb-2">
+    <a href="#">About</a> | 
+    <a href="#">Contact</a>
+  </div>
+
+  <p>
+    🚀 Developed by <b>Atharva Dhananjay More</b> |
+    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank">LinkedIn</a>
+  </p>
 </div>
 
 <!-- POPUP -->
@@ -307,7 +331,7 @@ router.get('/dashboard', async (req, res) => {
 
 </body>
 </html>
-  `);
+`);
 });
 // باقي routes same (edit, delete, logout)
 
