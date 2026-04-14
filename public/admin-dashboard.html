@@ -12,13 +12,14 @@
 
   <style>
     body {
-      background: #f4f7fe;
+      background: #f1f5f9;
+      font-family: 'Segoe UI', sans-serif;
     }
 
     /* Sidebar */
     .sidebar {
       height: 100vh;
-      background: #1e293b;
+      background: linear-gradient(180deg, #1e293b, #0f172a);
       color: white;
       position: fixed;
       width: 240px;
@@ -28,14 +29,18 @@
       font-weight: bold;
     }
 
-    .sidebar p {
+    .menu-item {
+      display: block;
       padding: 10px;
       border-radius: 6px;
-      cursor: pointer;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 5px;
       transition: 0.3s;
     }
 
-    .sidebar p:hover {
+    .menu-item:hover,
+    .menu-item.active {
       background: #334155;
     }
 
@@ -47,17 +52,40 @@
     /* Navbar */
     .topbar {
       background: white;
-      padding: 15px 25px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 12px 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .profile-circle {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: #6366f1;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
     /* Cards */
     .card {
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
     }
 
     .card h2 {
@@ -65,12 +93,9 @@
     }
 
     /* Buttons */
-    .btn-success {
+    .btn {
       border-radius: 8px;
-    }
-
-    .btn-primary {
-      border-radius: 8px;
+      font-weight: 500;
     }
 
     /* Footer */
@@ -97,21 +122,38 @@
   <h3>📊 ERP Panel</h3>
   <hr>
 
-  <p>📊 Dashboard</p>
-  <p>👨‍🎓 Students</p>
-  <p>📅 Attendance</p>
-  <p>📝 Notes</p>
+  <a href="/admin/dashboard" class="menu-item active">
+    <i class="bi bi-speedometer2"></i> Dashboard
+  </a>
 
-  <a href="/admin/logout" class="btn btn-danger w-100 mt-4">Logout</a>
+  <a href="/students" class="menu-item">
+    <i class="bi bi-people"></i> Students
+  </a>
+
+  <a href="/admin/attendance" class="menu-item">
+    <i class="bi bi-calendar-check"></i> Attendance
+  </a>
+
+  <a href="/admin/notes" class="menu-item">
+    <i class="bi bi-file-earmark-text"></i> Notes
+  </a>
+
+  <a href="/admin/logout" class="btn btn-danger w-100 mt-4">
+    <i class="bi bi-box-arrow-right"></i> Logout
+  </a>
 </div>
 
 <!-- Main -->
 <div class="main">
 
-  <!-- Topbar -->
+  <!-- Navbar -->
   <div class="topbar">
-    <h4>👋 Welcome, Admin</h4>
-    <span class="text-muted">Admin Panel</span>
+    <h5 class="mb-0">👋 Welcome, Admin</h5>
+
+    <div class="profile">
+      <i class="bi bi-bell"></i>
+      <div class="profile-circle">A</div>
+    </div>
   </div>
 
   <div class="container-fluid p-4">
@@ -141,7 +183,7 @@
     </div>
 
     <!-- Attendance -->
-    <div class="card mt-4 shadow p-3">
+    <div class="card mt-4 shadow p-4">
       <h5 class="mb-3">📋 Mark Attendance</h5>
 
       <table class="table table-hover align-middle">
@@ -165,18 +207,22 @@
         </tbody>
       </table>
 
-      <button class="btn btn-success">Submit Attendance</button>
+      <button class="btn btn-success">
+        <i class="bi bi-check-circle"></i> Submit Attendance
+      </button>
     </div>
 
     <!-- Upload Notes -->
-    <div class="card mt-4 shadow p-3">
+    <div class="card mt-4 shadow p-4">
       <h5 class="mb-3">📤 Upload Notes</h5>
 
       <input class="form-control mb-2" placeholder="Note Title">
       <input class="form-control mb-2" placeholder="Student ID">
-      <input type="file" class="form-control mb-2">
+      <input type="file" class="form-control mb-3">
 
-      <button class="btn btn-primary">Upload</button>
+      <button class="btn btn-primary">
+        <i class="bi bi-upload"></i> Upload
+      </button>
     </div>
 
   </div>
