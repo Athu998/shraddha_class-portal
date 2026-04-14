@@ -93,7 +93,7 @@ router.post('/login', async (req, res) => {
 });
 
 // ==========================================
-// 📊 DASHBOARD
+// 📊 DASHBOARD (WITH NAVBAR & MAP)
 // ==========================================
 
 router.get('/dashboard', checkAdmin, async (req, res) => {
@@ -106,56 +106,88 @@ router.get('/dashboard', checkAdmin, async (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Admin Dashboard</title>
+            <title>Admin Dashboard | Shraddha ERP</title>
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
             <style>
-                :root { --primary: #2b88f0; --bg: #f8fafc; }
-                body { background-color: var(--bg); font-family: 'Inter', sans-serif; }
-                .card { border: none; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+                :root { --primary: #2b88f0; --bg: #0f172a; }
+                body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+                
+                /* Navbar Style from Screenshot */
+                .navbar { 
+                    background: rgba(255, 255, 255, 0.8);
+                    backdrop-filter: blur(10px);
+                    border-bottom: 1px solid rgba(0,0,0,0.05);
+                    padding: 15px 0;
+                }
+
+                .card { border: none; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); background: #fff; }
+                
                 .status-radio input { display: none; }
                 .status-radio label { 
                     padding: 5px 15px; border-radius: 20px; cursor: pointer; border: 1px solid #e2e8f0; 
-                    font-size: 0.85rem; transition: 0.2s; font-weight: 500;
+                    font-size: 0.85rem; transition: 0.2s; font-weight: 500; color: #64748b;
                 }
                 .radio-p:checked + label { background: #dcfce7; color: #15803d; border-color: #10b981; }
                 .radio-a:checked + label { background: #fee2e2; color: #b91c1c; border-color: #ef4444; }
+
+                /* Footer Style from Screenshot */
+                footer { 
+                    background: #0f172a; 
+                    color: #94a3b8; 
+                    padding: 30px 0; 
+                    margin-top: 60px;
+                }
+                .footer-map { border-radius: 12px; overflow: hidden; height: 150px; }
+                
                 #loader { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); 
                           z-index:9999; display:none; flex-direction:column; justify-content:center; align-items:center; }
             </style>
         </head>
         <body>
 
-        <div id="loader"><div class="spinner-border text-primary"></div><p class="mt-2">Notifying Students...</p></div>
+        <div id="loader"><div class="spinner-border text-primary"></div><p class="mt-2 fw-bold">Syncing Data...</p></div>
 
-        <nav class="navbar navbar-light bg-white shadow-sm mb-4">
+        <nav class="navbar sticky-top mb-5">
             <div class="container">
-                <span class="navbar-brand fw-bold text-primary">SHRADDHA ERP</span>
-                <a href="/admin/logout" class="btn btn-outline-danger btn-sm rounded-pill">Logout</a>
+                <a class="navbar-brand fw-bold text-primary" href="#">
+                    <i class="fas fa-graduation-cap me-2"></i>SHRADDHA ERP
+                </a>
+                <div class="d-flex align-items-center">
+                    <span class="me-3 text-muted small d-none d-md-block" id="liveClock"></span>
+                    <a href="/admin/logout" class="btn btn-outline-danger btn-sm rounded-pill px-3">Logout</a>
+                </div>
             </div>
         </nav>
 
         <div class="container">
-            <div class="row">
+            <div class="row g-4">
                 <div class="col-12">
-                    <div class="card p-4 mb-4">
-                        <h4 class="fw-bold mb-4">Attendance Management</h4>
+                    <div class="card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="fw-bold mb-0">Attendance Control</h4>
+                            <span class="badge bg-primary-subtle text-primary rounded-pill px-3">${new Date().toDateString()}</span>
+                        </div>
+                        
                         <form id="attendanceForm" action="/admin/mark-attendance" method="POST">
                             <div class="table-responsive">
                                 <table class="table align-middle">
                                     <thead>
-                                        <tr>
-                                            <th>Student</th>
-                                            <th>Roll No</th>
-                                            <th class="text-center">Status</th>
-                                            <th class="text-center">Delete</th>
+                                        <tr class="text-muted small">
+                                            <th>STUDENT</th>
+                                            <th>ROLL NO</th>
+                                            <th class="text-center">ATTENDANCE</th>
+                                            <th class="text-center">ACTION</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         ${students.map(s => `
                                         <tr>
-                                            <td><strong>${s.name}</strong><br><small class="text-muted">${s.email || ''}</small></td>
-                                            <td>${s.roll || 'N/A'}</td>
+                                            <td>
+                                                <div class="fw-bold">${s.name}</div>
+                                                <div class="small text-muted">${s.email || 'no-email@link.com'}</div>
+                                            </td>
+                                            <td><span class="badge bg-light text-dark border">#${s.roll || 'N/A'}</span></td>
                                             <td class="text-center">
                                                 <div class="status-radio d-flex justify-content-center gap-2">
                                                     <input type="radio" id="p-${s._id}" name="attendance[${s._id}]" value="Present" class="radio-p" required>
@@ -165,40 +197,80 @@ router.get('/dashboard', checkAdmin, async (req, res) => {
                                                 </div>
                                             </td>
                                             <td class="text-center">
-                                                <button type="button" class="btn text-danger btn-sm" onclick="confirmDelete('${s._id}', '${s.name}')">
-                                                    <i class="fas fa-trash"></i>
+                                                <button type="button" class="btn text-danger btn-sm border-0" onclick="confirmDelete('${s._id}', '${s.name}')">
+                                                    <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             </td>
                                         </tr>`).join('')}
                                     </tbody>
                                 </table>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 mt-3 py-2 fw-bold">Submit Attendance</button>
+                            <button type="submit" class="btn btn-primary w-100 mt-3 py-2 fw-bold rounded-pill shadow-sm">
+                                <i class="fas fa-check-circle me-2"></i>Submit & Send Emails
+                            </button>
                         </form>
                     </div>
                 </div>
 
                 <div class="col-md-6 mx-auto">
-                    <div class="card p-4 bg-primary text-white">
-                        <h5 class="fw-bold mb-3">Upload Notes</h5>
+                    <div class="card p-4 bg-primary text-white shadow-lg">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-upload me-2"></i>Push Study Material</h5>
                         <form action="/admin/upload-note" method="POST" enctype="multipart/form-data">
-                            <input type="text" name="title" class="form-control mb-2 border-0" placeholder="Title" required>
+                            <input type="text" name="title" class="form-control mb-2 border-0" placeholder="Chapter Title" required>
                             <select name="class" class="form-select mb-2 border-0" required>
-                                <option value="">Class</option>
-                                ${[8, 9, 10, 11, 12].map(c => `<option value="${c}">${c}</option>`).join('')}
+                                <option value="">Select Class</option>
+                                ${[8, 9, 10, 11, 12].map(c => `<option value="${c}">Class ${c}</option>`).join('')}
                             </select>
                             <input type="file" name="pdf" class="form-control mb-3 border-0" accept="application/pdf" required>
-                            <button class="btn btn-light w-100 fw-bold text-primary">Upload PDF</button>
+                            <button class="btn btn-light w-100 fw-bold text-primary rounded-pill">Upload PDF</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
+        <footer>
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-7">
+                        <div class="mb-2" id="footerClock"></div>
+                        <div class="d-flex gap-2 mb-3">
+                            <button class="btn btn-sm btn-outline-info py-0">About</button>
+                            <button class="btn btn-sm btn-outline-info py-0">Contact</button>
+                        </div>
+                        <p class="small mb-0">Developed by <strong>Atharva More</strong> | <a href="#" class="text-info text-decoration-none">LinkedIn</a></p>
+                    </div>
+                    <div class="col-md-5 mt-4 mt-md-0">
+                        <div class="footer-map shadow-sm">
+                            <iframe 
+                                width="100%" 
+                                height="100%" 
+                                frameborder="0" 
+                                scrolling="no" 
+                                marginheight="0" 
+                                marginwidth="0" 
+                                src="https://maps.google.com/maps?q=Nashik%20Road,%20Nashik,%20Maharashtra&t=&z=13&ie=UTF8&iwloc=&output=embed">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
         <script>
+            // Live Clock Logic
+            function updateClock() {
+                const now = new Date().toLocaleString();
+                document.getElementById('liveClock').innerText = now;
+                document.getElementById('footerClock').innerText = now;
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+
             document.getElementById('attendanceForm').onsubmit = () => document.getElementById('loader').style.display = 'flex';
+            
             function confirmDelete(id, name) {
-                if(confirm('Delete ' + name + '?')) {
+                if(confirm('Are you sure you want to permanently delete ' + name + '?')) {
                     const form = document.createElement('form');
                     form.method = 'POST';
                     form.action = '/admin/delete-student/' + id;
@@ -230,7 +302,7 @@ router.post('/mark-attendance', checkAdmin, async (req, res) => {
             return sendAttendanceEmail(studentId, status, date);
         });
         await Promise.all(tasks);
-        res.send("<script>alert('Done!'); window.location='/admin/dashboard';</script>");
+        res.send("<script>alert('Attendance Synced Successfully!'); window.location='/admin/dashboard';</script>");
     } catch (err) { res.status(500).send("Error"); }
 });
 
@@ -240,7 +312,7 @@ router.post('/upload-note', checkAdmin, upload.single('pdf'), async (req, res) =
         const students = await Student.find({ className });
         const notes = students.map(s => ({ student_id: s._id, title, file: req.file.filename }));
         await Notes.insertMany(notes);
-        res.send("<script>alert('Uploaded!'); window.location='/admin/dashboard';</script>");
+        res.send("<script>alert('Notes Uploaded!'); window.location='/admin/dashboard';</script>");
     } catch (err) { res.send("Error"); }
 });
 
