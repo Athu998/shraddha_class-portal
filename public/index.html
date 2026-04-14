@@ -118,7 +118,34 @@
       </div>
 
     </div>
+    <!-- 🔥 POPUP -->
+<div id="popup" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  display: none;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  max-width: 250px;
+  z-index: 9999;
+">
+
+  <p style="margin:0; font-size:14px;">
+    🚀 Developed by 
+    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" style="color:#007bff;">
+      <b>Atharva More</b>
+    </a>
+  </p>
+
+  <p style="margin:5px 0 0; font-size:13px;">
+    Crafted with ❤️ in Mumbai/Nashik 🇮🇳
+  </p>
+
+</div>
   </div>
+  
 </section>
 
 <!-- Footer -->
@@ -146,10 +173,10 @@
       <!-- Right Map -->
       <div class="col-md-4 mt-3 mt-md-0">
         <iframe 
-          src="https://www.google.com/maps?q=Pune&output=embed"
-          width="100%" height="150"
-          style="border:0; border-radius:10px;">
-        </iframe>
+  src="https://www.google.com/maps?q=Nashik,Maharashtra&output=embed"
+  width="100%" height="150"
+  style="border:0; border-radius:10px;">
+</iframe>
       </div>
 
     </div>
@@ -163,6 +190,27 @@
   setInterval(updateDateTime, 1000);
   updateDateTime();
 </script>
+ <script>
+  const popup = document.getElementById("popup");
 
+  function showPopup() {
+    popup.style.display = "block";
+
+    setTimeout(() => {
+      popup.style.display = "none";
+    }, 3000);
+  }
+
+  // First show after 2 sec
+  setTimeout(() => {
+    showPopup();
+
+    // Repeat loop properly
+    setInterval(() => {
+      showPopup();
+    }, 5000);
+
+  }, 2000);
+</script>
 </body>
 </html>
