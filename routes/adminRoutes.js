@@ -151,7 +151,7 @@ router.get('/dashboard', checkAdmin, async (req, res) => {
         <nav class="navbar sticky-top mb-5">
             <div class="container">
                 <a class="navbar-brand fw-bold text-primary" href="#">
-                    <i class="fas fa-graduation-cap me-2"></i>SHRADDHA ERP
+                    <i class="fas fa-graduation-cap me-2"></i>SHRADDHA Classes
                 </a>
                 <div class="d-flex align-items-center">
                     <span class="me-3 text-muted small d-none d-md-block" id="liveClock"></span>
@@ -167,6 +167,7 @@ router.get('/dashboard', checkAdmin, async (req, res) => {
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h4 class="fw-bold mb-0">Attendance Control</h4>
                             <span class="badge bg-primary-subtle text-primary rounded-pill px-3">${new Date().toDateString()}</span>
+                              <a href="/students/register-form" class="btn btn-success btn-custom">🎓 Student Register</a>
                         </div>
                         
                         <form id="attendanceForm" action="/admin/mark-attendance" method="POST">
@@ -223,7 +224,7 @@ router.get('/dashboard', checkAdmin, async (req, res) => {
                             </select>
                             <input type="file" name="pdf" class="form-control mb-3 border-0" accept="application/pdf" required>
                             <button class="btn btn-light w-100 fw-bold text-primary rounded-pill">Upload PDF</button>
-                             <a href="/students/register-form" class="btn btn-success btn-custom">🎓 Student Register</a>
+                           
                         </form>
                     </div>
                 </div>
