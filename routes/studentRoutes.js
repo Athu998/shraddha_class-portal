@@ -227,12 +227,25 @@ router.get('/dashboard', async (req, res) => {
 
 <!-- HEADER -->
 <div class="header">
-  <div class="logo">🎓 SHRADDDHA Classes Developed by <b>Atharva More </b></div>
+  <div class="logo">🎓 SHRADDDHA Classes </div>
 
   <div>
-    <small class="me-3">🚀 Developed by <b>Atharva More</b></small>
-    <a href="/" class="btn btn-light btn-sm">Home</a>
-  </div>
+  <small class="me-3">
+    🚀 Developed by 
+    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" 
+       target="_blank" 
+       class="dev-link" 
+       style="color:#00c6ff; text-decoration:none;">
+      <b>Atharva More</b>
+    </a>
+  </small>
+
+  <a href="/" class="btn btn-light btn-sm">Home</a>
+</div>
+.dev-link:hover {
+  color: #0dcaf0;
+  text-decoration: underline;
+}
 </div>
 
 <div class="main-container">
@@ -276,28 +289,6 @@ router.get('/dashboard', async (req, res) => {
       `).join('')}
     </table>
   </div>
-<script>
-  const ctx = document.getElementById('attendanceChart');
-
-  new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Present', 'Absent'],
-      datasets: [{
-        data: [${present}, ${absent}],
-        backgroundColor: ['#28a745', '#dc3545']
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'bottom'
-        }
-      }
-    }
-  });
-</script>
   <!-- NOTES -->
   <div class="section-box">
     <h5>📘 Notes</h5>
@@ -322,17 +313,40 @@ router.get('/dashboard', async (req, res) => {
 
 <!-- FOOTER -->
 <div class="footer">
-  <p>📅 ${new Date().toLocaleString()}</p>
 
-  <div class="mb-2">
-    <a href="#">About</a> | 
-    <a href="#">Contact</a>
-  </div>
-
-  <p>
-    🚀 Developed by <b>Atharva Dhananjay More</b> |
-    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank">LinkedIn</a>
+  <p style="font-size:14px; opacity:0.9;">
+    🚀 Developed & Maintained by 
+    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" 
+       target="_blank" 
+       class="dev-link">
+      <b>Atharva Dhananjay More</b>
+    </a>
   </p>
+
+  <p style="margin-top:5px; font-size:13px; opacity:0.7;">
+    Full Stack Developer | Building modern ERP & web solutions
+  </p>
+
+  <p style="margin-top:5px; font-size:13px; opacity:0.7;">
+    Crafted with ❤️ in Mumbai 🇮🇳
+  </p>
+
+  <!-- 🔥 MARKETING LINE -->
+  <p style="margin-top:10px; font-size:13px; color:#00c6ff;">
+    💼 Want a website like this at low cost? 
+    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" class="dev-link">
+      Contact Developer
+    </a>
+  </p>
+.dev-link {
+  color: #00c6ff;
+  text-decoration: none;
+}
+
+.dev-link:hover {
+  color: #0dcaf0;
+  text-decoration: underline;
+}
 </div>
 
 <!-- POPUP -->
