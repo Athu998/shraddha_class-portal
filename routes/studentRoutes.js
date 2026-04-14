@@ -134,102 +134,198 @@ router.post('/login', async (req, res) => {
 // 📊 DASHBOARD (🔥 PRO UI)
 // =======================
 router.get('/dashboard', async (req, res) => {
-  if (!req.session.student) return res.send("Unauthorized");
+  if (!req.session.student) return res.redirect('/');
 
   const student = await Student.findById(req.session.student.id);
   const attendance = await Attendance.find({ student_id: student._id });
-  const notes = await Notes.find({ student_id: student._id });
-  const worksheets = await Worksheet.find();
 
   const total = attendance.length;
   const present = attendance.filter(a => a.status === 'Present').length;
   const absent = total - present;
 
   res.send(`
-  <!DOCTYPE html>
-  <html>
-  <head>
-    <title>Student Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ERP Dashboard</title>
 
-  <body class="bg-light">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <nav class="navbar navbar-dark bg-dark px-3">
-    <span class="navbar-brand">🎓 Shraddha Coaching</span>
-    <span class="text-white">Welcome, ${student.name}</span>
-  </nav>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1f2937, #111827);
+      color: white;
+      font-family: 'Segoe UI';
+    }
 
-  <div class="container mt-4">
+    .navbar {
+      background: rgba(0,0,0,0.7);
+    }
 
-    <div class="row text-center">
-      <div class="col-md-4">
-        <div class="card shadow p-3">
-          <h5>Total Days</h5>
-          <h2>${total}</h2>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card shadow p-3 text-success">
-          <h5>Present</h5>
-          <h2>${present}</h2>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card shadow p-3 text-danger">
-          <h5>Absent</h5>
-          <h2>${absent}</h2>
-        </div>
+    .card {
+      border-radius: 15px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .table {
+      background: white;
+      color: black;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    /* 🔥 GOOGLE LOADER */
+    .loader {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .loader div {
+      width: 15px;
+      height: 15px;
+      margin: 5px;
+      border-radius: 50%;
+      background: #4285F4;
+      animation: bounce 0.6s infinite alternate;
+    }
+
+    .loader div:nth-child(2) { background: #EA4335; animation-delay: 0.2s; }
+    .loader div:nth-child(3) { background: #FBBC05; animation-delay: 0.4s; }
+    .loader div:nth-child(4) { background: #34A853; animation-delay: 0.6s; }
+
+    @keyframes bounce {
+      to { transform: translateY(-15px); }
+    }
+
+    .popup {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      color: black;
+      padding: 20px;
+      border-radius: 10px;
+      display: none;
+      z-index: 9999;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 50px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- 🔥 LOADER -->
+<div class="loader" id="loader">
+  <div></div><div></div><div></div><div></div>
+</div>
+
+<nav class="navbar p-3 d-flex justify-content-between">
+  <h4>🎓 Shraddha ERP</h4>
+
+  <div>
+    <a href="/" class="btn btn-light btn-sm">🏠 Home</a>
+    <a href="/students/logout" class="btn btn-danger btn-sm">Logout</a>
+  </div>
+</nav>
+
+<div class="container mt-4">
+
+  <h5>Welcome, ${student.name}</h5>
+
+  <div class="row text-center g-4 mt-2">
+    <div class="col-md-4">
+      <div class="card p-4">
+        <h5>Total Days</h5>
+        <h1>${total}</h1>
       </div>
     </div>
 
-    <hr>
-
-    <h4>📅 Attendance</h4>
-    <table class="table table-bordered">
-      <tr><th>Date</th><th>Status</th></tr>
-      ${attendance.map(a => `
-        <tr>
-          <td>${new Date(a.date).toISOString().split('T')[0]}</td>
-          <td>${a.status}</td>
-        </tr>
-      `).join('')}
-    </table>
-
-    <h4>📘 Notes</h4>
-    ${notes.map(n => `
-      <div>
-        ${n.title} - <a href="/uploads/${n.file}" target="_blank">View</a>
+    <div class="col-md-4">
+      <div class="card p-4 text-success">
+        <h5>Present</h5>
+        <h1>${present}</h1>
       </div>
-    `).join('')}
-
-    <h4 class="mt-3">📝 Worksheets</h4>
-    ${worksheets.map(w => `
-      <div>
-        ${w.title} - <a href="/uploads/${w.file}" target="_blank">View</a>
-      </div>
-    `).join('')}
-
-    <hr>
-
-    <div class="text-center mt-4">
-      <p>🚀 <b>Developed & Maintained by Atharva Dhananjay More</b></p>
-      <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank">
-        🔗 Connect on LinkedIn
-      </a>
     </div>
 
-    <div class="text-center mt-3">
-      <a href="/students/logout" class="btn btn-danger">Logout</a>
+    <div class="col-md-4">
+      <div class="card p-4 text-danger">
+        <h5>Absent</h5>
+        <h1>${absent}</h1>
+      </div>
     </div>
-
   </div>
 
-  </body>
-  </html>
+  <hr>
+
+  <h4>📅 Attendance</h4>
+
+  <table class="table mt-3">
+    <tr><th>Date</th><th>Status</th></tr>
+    ${attendance.map(a => `
+      <tr>
+        <td>${new Date(a.date).toISOString().split('T')[0]}</td>
+        <td>${a.status}</td>
+      </tr>
+    `).join('')}
+  </table>
+
+  <div class="footer">
+    🚀 Developed & Maintained by <b>Atharva Dhananjay More</b><br>
+    <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" style="color:lightblue;">
+      Connect on LinkedIn
+    </a>
+  </div>
+
+</div>
+
+<!-- 🔥 POPUP -->
+<div class="popup" id="popup">
+  <h5>👋 Welcome!</h5>
+  <p>This ERP is built by</p>
+  <b>Atharva Dhananjay More</b><br><br>
+  <a href="https://www.linkedin.com/in/atharva-more-34a015194/" target="_blank" class="btn btn-primary btn-sm">
+    Visit LinkedIn
+  </a>
+</div>
+
+<script>
+  // Loader remove after load
+  window.onload = () => {
+    document.getElementById("loader").style.display = "none";
+  };
+
+  // Popup after 5 sec
+  setTimeout(() => {
+    document.getElementById("popup").style.display = "block";
+  }, 5000);
+
+  // Auto hide popup
+  setTimeout(() => {
+    document.getElementById("popup").style.display = "none";
+  }, 15000);
+</script>
+
+</body>
+</html>
   `);
 });
-
 // باقي routes same (edit, delete, logout)
 
 module.exports = router;
